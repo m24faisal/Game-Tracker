@@ -1,0 +1,21 @@
+Things to be added to the application later:
+C++ Backend
+No GUI Yet
+Qt6 in the future
+upload to twitch youtube
+Twitch/Youtube Integration
+Save clips to your pc
+save metadata to pc
+metadata i.e. boss completion time
+Speedrunning integrstion
+start with minecraft mod
+Minecraft mod, possible forge (also cracked support). (we do not support piracy) 
+Sends metadata to backend application.
+Don't know which library to use to record screen
+possible live playback with in-game stats/items/inventory/ 
+customizable performance settings
+(eg. sampling time)
+(eg. resolution of recording)
+schedule uploads
+(eventual support for in game overlays) (HUD)
+Create group github repo - DONE
