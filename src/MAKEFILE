@@ -1,4 +1,5 @@
 # Makefile for Writing Make Files Example
+# Tabs are required, not tabs
  
 # *****************************************************
 # Variables to control Makefile operation
