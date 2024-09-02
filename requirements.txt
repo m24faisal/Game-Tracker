@@ -1,4 +1,4 @@
 CMake
 GCC
 G++
-RabbitMQ
+RabbitMQ - rmqcpp - vcpkg
