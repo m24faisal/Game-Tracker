@@ -1,15 +1,12 @@
-import pika
-import os
-def receive_main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
+from dataclasses import dataclass
 
-    channel.queue_declare(queue='hello')
+@dataclass
 
-    def callback(ch, method, properties, body):
-        print(f" [x] Received {body}")
-
-    channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
-
-    print(' [*] Waiting for messages. To exit press CTRL+C')
-    channel.start_consuming()
+class dataSnap:
+    fps: float
+    plyrHealth: int
+    plyrInventory: list[int]
+    plyrStatus: list[int]
+    plyrHunger: int
+    plyrSat: int
+    
