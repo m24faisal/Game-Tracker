@@ -1,4 +1,5 @@
 CMake
 GCC
 G++
-RabbitMQ - rmqcpp - vcpkg
+RabbitMQ - Python
+Docker
