@@ -7,6 +7,7 @@ class DataSnap:
     time: float
     date: str
 
+    plyrName: str
     plyrLocation: list[float]
     plyrHealth: int
     plyrInventory: list[int]

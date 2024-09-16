@@ -20,7 +20,8 @@ while True:
     inp = input("Enter data: ")
     if inp == "exit":
         break
-    data = {'data' : inp}
+    data = example
+    data.plyrName = inp
 # Serialize the object with pickle
     serialized_data = pickle.dumps(data)
 
