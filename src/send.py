@@ -12,8 +12,6 @@ channel.queue_declare(queue='test_queue')
 example = df.DataSnap(fps=3, time=1230, date="Sept 11, 2024", plyrName="PLACEHOLDER", plyrLocation=[12,20,13], plyrHealth=20, plyrInventory=[], 
                       plyrStatus=[], plyrHunger=4.3, plyrSat=0 )
 
-print(example)
-
 while True:
 # Define the Python object to be sent
     
