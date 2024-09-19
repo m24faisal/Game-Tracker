@@ -27,6 +27,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraft.server.level.ServerPlayer;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ExampleMod.MODID)
@@ -83,6 +87,18 @@ public class ExampleMod
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
+    // Listen for the player jump event
+    @SubscribeEvent
+    public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+        // Check if the entity jumping is a player
+        if (event.getEntity() instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) event.getEntity();
+
+            // Send a message to the player's chat when they jump
+            player.sendSystemMessage((Component.literal("You jumped!")));
+        }
+    }
+
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
