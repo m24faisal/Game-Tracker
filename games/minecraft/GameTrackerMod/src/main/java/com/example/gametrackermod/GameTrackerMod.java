@@ -1,8 +1,10 @@
-package com.example.gametracker;
+package com.example.gametrackermod;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -11,10 +13,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.chunk.storage.RegionFileStorage;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,16 +31,16 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
+
+import java.io.File;
+import java.io.IOException;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(GameTracker.MODID)
-public class GameTracker
+@Mod(GameTrackerMod.MODID)
+public class GameTrackerMod
 {
     // Define mod id in a common place for everything to reference
-    public static final String MODID = "gametracker";
+    public static final String MODID = "gametrackermod";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
@@ -63,7 +67,9 @@ public class GameTracker
                 output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
             }).build());
 
-    public GameTracker(FMLJavaModLoadingContext context)
+    private ExternalAPI externalAPI;
+
+    public GameTrackerMod(FMLJavaModLoadingContext context)
     {
         IEventBus modEventBus = context.getModEventBus();
 
@@ -85,8 +91,22 @@ public class GameTracker
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        externalAPI = new ExternalAPI();
     }
-    // Listen for the player jump event
+
+    @SubscribeEvent
+    public void onCommonSetup(FMLCommonSetupEvent event) {
+        // Load the external JARs from META-INF/libraries/
+        try {
+            //File libDirectory = new File(this.getClass().getClassLoader().getResource("META-INF/libraries/").getFile());
+            //JarLoader.loadJars(libDirectory);
+            int a = 1;
+        } catch (Exception e) {
+            LOGGER.info("Modloader manual issue: {}", e.toString());
+        }
+    }
+
     @SubscribeEvent
     public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
         // Check if the entity jumping is a player
@@ -94,7 +114,22 @@ public class GameTracker
             ServerPlayer player = (ServerPlayer) event.getEntity();
 
             // Send a message to the player's chat when they jump
-            player.sendSystemMessage((Component.literal("You jumped!")));
+            player.sendSystemMessage(Component.literal("You jumped!"));
+
+            //say "I Jumped" on player's behalf
+            try{
+                player.getServer().getCommands().getDispatcher().execute(
+                        "say I just jumped!", // Command to execute
+                        player.createCommandSourceStack().withSuppressedOutput()// Command source (player)
+
+                );
+
+                String message = player.getName().getString() + " jumped!";
+                externalAPI.sendMessage(message);
+
+            } catch (Exception e) {
+                System.out.println("Exception in sending player chat messages");
+            }
         }
     }
 
