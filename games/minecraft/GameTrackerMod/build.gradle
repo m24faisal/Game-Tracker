@@ -78,6 +78,15 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+
+            arg '-nogui'
+
+            mods {
+                gametrackermod {
+                    source sourceSets.main
+                    //source project(':common').sourceSets.getByName("main")
+                }
+            }
         }
 
         client {
@@ -136,9 +145,12 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation 'org.springframework.boot:spring-boot-starter:2.5.4'
-    implementation 'com.rabbitmq:amqp-client:5.13.1'
-    implementation 'org.springframework.boot:spring-boot-starter:2.5.4'
+    shadow 'com.google.code.gson:gson:2.10.1'
+    shadow 'com.google.guava:guava:31.1-jre'
+    //implementation  'com.rabbitmq:amqp-client:5.16.0'
+    //implementation files('src/main/resources/META-INF/libraries/slf4j-api-1.7.36.jar')
+    //implementation files('src/main/resources/META-INF/libraries/amqp-client-5.16.0.jar')
+    //implementation files('src/main/resources/META-INF/libraries/slf4j-simple-1.7.36.jar')
     testImplementation 'junit:junit:4.13.2'
     /*
     implementation files(
@@ -180,7 +192,8 @@ shadowJar {
     archiveVersion.set("0.0.1")  // You can also set a custom version
     archiveClassifier.set("")
     exclude 'net/minecraftforge/**'  // Don't bundle Forge itself
-
+    exclude '/mappings/*'
+    //relocate 'com.rabbitmq', 'gametrackermod.external.rabbitmq'
     mergeServiceFiles()
 }
 
