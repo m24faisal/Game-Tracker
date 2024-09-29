@@ -16,6 +16,8 @@ base {
 
 // Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+sourceCompatibility = '21'
+targetCompatibility = '21'
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -147,7 +149,7 @@ dependencies {
 
     shadow 'com.google.code.gson:gson:2.10.1'
     shadow 'com.google.guava:guava:31.1-jre'
-    //implementation  'com.rabbitmq:amqp-client:5.16.0'
+    implementation  'com.rabbitmq:amqp-client:5.16.0'
     //implementation files('src/main/resources/META-INF/libraries/slf4j-api-1.7.36.jar')
     //implementation files('src/main/resources/META-INF/libraries/amqp-client-5.16.0.jar')
     //implementation files('src/main/resources/META-INF/libraries/slf4j-simple-1.7.36.jar')
@@ -176,6 +178,7 @@ dependencies {
     
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+ 
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+    implementation fg.deobf("net.minecraftforge:forge:1.21.1-52.0.16")
 }
 
 
