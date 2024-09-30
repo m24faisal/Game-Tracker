@@ -133,10 +133,10 @@ repositories {
     }
     maven {
         url = uri("https://company/com/maven2")
-    }/*
+    }
     flatDir {
-         dir 'src/main/resources/META-INF/libraries'
-    }*/
+         dir 'libs'
+    }
 }
 
 dependencies {
@@ -149,10 +149,11 @@ dependencies {
 
     shadow 'com.google.code.gson:gson:2.10.1'
     shadow 'com.google.guava:guava:31.1-jre'
-    implementation  'com.rabbitmq:amqp-client:5.16.0'
+    //implementation  'com.rabbitmq:amqp-client:5.16.0'
     //implementation files('src/main/resources/META-INF/libraries/slf4j-api-1.7.36.jar')
     //implementation files('src/main/resources/META-INF/libraries/amqp-client-5.16.0.jar')
     //implementation files('src/main/resources/META-INF/libraries/slf4j-simple-1.7.36.jar')
+    implementation files('libs/amqp-client-5.16.0.jar')
     testImplementation 'junit:junit:4.13.2'
     /*
     implementation files(
@@ -181,13 +182,26 @@ dependencies {
     implementation fg.deobf("net.minecraftforge:forge:1.21.1-52.0.16")
 }
 
+// Creating the fat JAR task
+task fatJar(type: Jar) {
+    archiveBaseName = project.name + '-release'  // Optional: Name of the output JAR file
 
-/*shadowJar {
-    // Optional: Relocate to avoid conflicts if needed
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    relocate 'com.rabbitmq', 'GameTracker.external.rabbitmq'
-    relocate 'org.slf4j', 'GameTracker.external.slf4j'
-}*/
+    // Include compiled class files of your mod
+    from sourceSets.main.output
+
+    // Include JARs from the libs folder
+    from {
+        configurations.runtimeClasspath.filter { it.name.endsWith('jar') && it.path.contains('libs') }
+                .collect { zipTree(it) }
+    }
+
+    manifest {
+        attributes(
+                'Main-Class': 'com.example.GameTrackerMod'  // Optional: Replace with your mod's main class
+        )
+    }
+}
+
 
 shadowJar {
     zip64 true
@@ -196,7 +210,7 @@ shadowJar {
     archiveClassifier.set("")
     exclude 'net/minecraftforge/**'  // Don't bundle Forge itself
     exclude '/mappings/*'
-    //relocate 'com.rabbitmq', 'gametrackermod.external.rabbitmq'
+    relocate 'com.rabbitmq', 'gametrackermod.external.rabbitmq'
     mergeServiceFiles()
 }
 

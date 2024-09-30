@@ -1,0 +1,3 @@
+Go to base directory
+Run .\gradlew clean build fatJar
+copy resulting -release jar file into mods folder
