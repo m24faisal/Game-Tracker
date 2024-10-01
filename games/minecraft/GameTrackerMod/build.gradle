@@ -150,9 +150,7 @@ dependencies {
     shadow 'com.google.code.gson:gson:2.10.1'
     shadow 'com.google.guava:guava:31.1-jre'
     //implementation  'com.rabbitmq:amqp-client:5.16.0'
-    //implementation files('src/main/resources/META-INF/libraries/slf4j-api-1.7.36.jar')
-    //implementation files('src/main/resources/META-INF/libraries/amqp-client-5.16.0.jar')
-    //implementation files('src/main/resources/META-INF/libraries/slf4j-simple-1.7.36.jar')
+
     implementation files('libs/amqp-client-5.16.0.jar')
     testImplementation 'junit:junit:4.13.2'
     /*
@@ -161,21 +159,6 @@ dependencies {
             'src/main/resources/META-INF/libraries/slf4j-api-1.7.36.jar',
             'src/main/resources/META-INF/libraries/slf4j-simple-1.7.36.jar'
     )*/
-
-    // Example mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${mc_version}-forge-api:${jei_version}"
-    // runtimeOnly "mezz.jei:jei-${mc_version}-forge:${jei_version}"
-
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+ 
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
@@ -184,7 +167,7 @@ dependencies {
 
 // Creating the fat JAR task
 task fatJar(type: Jar) {
-    archiveBaseName = project.name + '-release'  // Optional: Name of the output JAR file
+    archiveBaseName = project.name + '-Release'  // Optional: Name of the output JAR file
 
     // Include compiled class files of your mod
     from sourceSets.main.output
@@ -202,27 +185,6 @@ task fatJar(type: Jar) {
     }
 }
 
-
-shadowJar {
-    zip64 true
-    archiveBaseName.set("gametracker_release")
-    archiveVersion.set("0.0.1")  // You can also set a custom version
-    archiveClassifier.set("")
-    exclude 'net/minecraftforge/**'  // Don't bundle Forge itself
-    exclude '/mappings/*'
-    relocate 'com.rabbitmq', 'gametrackermod.external.rabbitmq'
-    mergeServiceFiles()
-}
-
-
-// Ensure that the external JAR gets baked into the mod's final JAR
-/*
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from('src/main/resources/META-INF/libraries/') {
-        into('META-INF/libraries')
-    }
-}*/
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.

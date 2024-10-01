@@ -1,3 +1,7 @@
 Go to base directory
 Run .\gradlew clean build fatJar
-copy resulting -release jar file into mods folder
+Copy resulting /build/libs/GameTrackerMod-Release-x.x.x.jar jar file into your forge mods folder
+
+Ensure that minecraft and forge versions match mod's requirements
+Ensure that you have jdk21 and set the JAVA_HOME and path variables to your jdk21 installation
+You may have to re-initialize this mod if you use an IDE other than intellij
