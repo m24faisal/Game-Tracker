@@ -43,7 +43,7 @@ public class GameTrackerMod
     // Define mod id in a common place for everything to reference
     public static final String MODID = "gametrackermod";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
@@ -93,7 +93,7 @@ public class GameTrackerMod
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
-        externalAPI = new ExternalAPI(LOGGER);
+        externalAPI = new ExternalAPI(this);
     }
 
     @SubscribeEvent

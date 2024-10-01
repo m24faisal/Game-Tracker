@@ -5,7 +5,7 @@ def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
 
-    channel.queue_declare(queue='examplequeue')
+    channel.queue_declare(queue='debug_queue_gametracker')
 
     def callback(ch, method, properties, body):
         print(f" [x] Received {body}")
