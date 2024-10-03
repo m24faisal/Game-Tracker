@@ -57,7 +57,6 @@ public class ExternalAPI {
     public String StringMapToJSON(HashMap<String, String> map){
         StringBuilder out = new StringBuilder("{");
         for(var entry : map.entrySet()){
-            o
             out.append("\"") .append(entry.getKey()) .append("\"")
                     .append(" : ")
                     .append("\"") .append(entry.getValue()) .append("\"")
