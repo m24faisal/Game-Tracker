@@ -3,6 +3,7 @@ package com.example.gametrackermod;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import net.minecraftforge.event.TickEvent;
 import org.slf4j.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +11,12 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.client.Minecraft;
+
 
 
 public class ExternalAPI {
@@ -57,7 +64,6 @@ public class ExternalAPI {
     public String StringMapToJSON(HashMap<String, String> map){
         StringBuilder out = new StringBuilder("{");
         for(var entry : map.entrySet()){
-            o
             out.append("\"") .append(entry.getKey()) .append("\"")
                     .append(" : ")
                     .append("\"") .append(entry.getValue()) .append("\"")
@@ -80,8 +86,8 @@ public class ExternalAPI {
         System.out.println(" [x] Sent '" + message + "'");
         LOGGER.info("Sent: {}, Queue: {}", message, DEBUG_QUEUE_NAME);
     }
-
-    public void sendData() throws IOException {
+    @SubscribeEvent
+    public void sendData(PlayerEvent.PlayerLoggedInEvent event) throws IOException {
         if(channel == null){
             LOGGER.info("channel is null");
             throw new IOException("RabbitMQ Channel null");
@@ -89,17 +95,20 @@ public class ExternalAPI {
             LOGGER.info("channel isn't open");
             throw new IOException("RabbitMQ Channel not open");
         }
-
         HashMap<String, String> dataToken = new HashMap<String, String>();
-        dataToken.put("fps", "100");
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+        Minecraft minecraft = Minecraft.getInstance();
+        int fps = minecraft.getFps();
+        String fpsString = String.format("Current fps: %d",fps);
+        dataToken.put("fps", fpsString);
         dataToken.put("time", LocalTime.now().toString());
         dataToken.put("date", LocalDate.now().toString());
-        dataToken.put("plyrName", "playerName");
-        dataToken.put("plyrLocation", "100");
-        dataToken.put("plyrHealth", "100");
-        dataToken.put("plyrInventory", "100");
+        dataToken.put("plyrName", String.valueOf(player.getName()));
+        dataToken.put("plyrLocation", String.valueOf(player.position()));
+        dataToken.put("plyrHealth", String.valueOf(player.getHealth()));
+        dataToken.put("plyrInventory", String.valueOf(player.getInventory()));
         dataToken.put("plyrStatus", "100");
-        dataToken.put("plyrHunger", "100");
+        dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
         dataToken.put("plyrSat", "100");
 
 

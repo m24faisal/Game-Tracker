@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,6 +33,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -114,7 +116,9 @@ public class GameTrackerMod
                 );
 
                 String message = player.getName().getString() + " jumped!";
-                externalAPI.sendMessage(message);
+                // externalAPI.sendMessage(message);
+                PlayerEvent.PlayerLoggedInEvent event1 = new PlayerEvent.PlayerLoggedInEvent(player);
+                externalAPI.sendData(event1);
 
             } catch (Exception e) {
                 System.out.println("Exception in sending player chat messages");

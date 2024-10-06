@@ -5,12 +5,12 @@ def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
 
-    channel.queue_declare(queue='debug_queue_gametracker')
+    channel.queue_declare(queue="data_gametracker")
 
     def callback(ch, method, properties, body):
         print(f" [x] Received {body}")
 
-    channel.basic_consume(queue='examplequeue', on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue="data_gametracker", on_message_callback=callback, auto_ack=True)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
