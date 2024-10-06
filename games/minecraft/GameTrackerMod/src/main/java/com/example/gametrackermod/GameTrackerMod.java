@@ -116,10 +116,15 @@ public class GameTrackerMod
                 );
 
                 String message = player.getName().getString() + " jumped!";
+<<<<<<< HEAD
                 // externalAPI.sendMessage(message);
                 PlayerEvent.PlayerLoggedInEvent event1 = new PlayerEvent.PlayerLoggedInEvent(player);
                 externalAPI.sendData(event1);
 
+=======
+                //externalAPI.sendMessage(message);
+                externalAPI.sendData();
+>>>>>>> 5530546294972e45da541ef9f33fa0458d8b0515
             } catch (Exception e) {
                 System.out.println("Exception in sending player chat messages");
             }
