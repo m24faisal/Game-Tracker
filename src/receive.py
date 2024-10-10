@@ -13,9 +13,13 @@ channel.queue_declare(queue='data_gametracker')
 # Callback function to handle received messages
 def callback(ch, method, properties, body):
     # Read data from the received message queue
-    data = json.loads(body)
-    print(f"Received data: {body}")
-    print(data)
+    try:
+        print(f"Received data: {body}")
+        data = data.replace("\'", "\"")
+        data = json.loads(body)
+        print(data)
+    except Exception as e:
+        print("Could not decipher properly")
 
 # Set up the consumer to listen to the queue
 channel.basic_consume(queue='data_gametracker',
