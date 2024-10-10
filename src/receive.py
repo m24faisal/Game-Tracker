@@ -2,6 +2,8 @@ import pika
 import pickle
 import dataFormat as df
 import json
+import re
+
 
 # Connect to RabbitMQ server
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -13,9 +15,10 @@ channel.queue_declare(queue='data_gametracker')
 # Callback function to handle received messages
 def callback(ch, method, properties, body):
     # Read data from the received message queue
+    p = re.compile('(?<!\\\\)\'')
     try:
         print(f"Received data: {body}")
-        data = data.replace("\'", "\"")
+        data = p.sub('\"', data)
         data = json.loads(body)
         print(data)
     except Exception as e:
