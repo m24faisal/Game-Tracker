@@ -18,8 +18,9 @@ def callback(ch, method, properties, body):
     p = re.compile('(?<!\\\\)\'')
     try:
         print(f"Received data: {body}")
+        data = body.decode('ascii')
         data = p.sub('\"', data)
-        data = json.loads(body)
+        data = json.loads(data)
         print(data)
     except Exception as e:
         print("Could not decipher properly")

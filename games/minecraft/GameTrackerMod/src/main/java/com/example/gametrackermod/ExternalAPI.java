@@ -64,6 +64,13 @@ public class ExternalAPI {
     public String StringMapToJSON(HashMap<String, String> map){
         StringBuilder out = new StringBuilder("{");
         for(var entry : map.entrySet()){
+            //check if final element
+            if(entry == map.entrySet().stream().toList().get(map.entrySet().size() - 1) ){
+                out.append("\"") .append(entry.getKey()) .append("\"")
+                        .append(" : ")
+                        .append("\"") .append(entry.getValue()) .append("\"");
+                break;
+            }
             out.append("\"") .append(entry.getKey()) .append("\"")
                     .append(" : ")
                     .append("\"") .append(entry.getValue()) .append("\"")
@@ -109,7 +116,7 @@ public class ExternalAPI {
         dataToken.put("plyrInventory", String.valueOf(player.getInventory()));
         dataToken.put("plyrStatus", "100");
         dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
-        dataToken.put("plyrSat", "100");
+        dataToken.put("plyrSat", String.valueOf(player.getFoodData().getFoodLevel()));
 
 
         String out = StringMapToJSON(dataToken);
