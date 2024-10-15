@@ -20,6 +20,13 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
     try:
         fps = int(data.get("fps"))
         time = data.get('time')
+        plyrName = data.get('plyrName')
+        plyrInventory = data.get('plyrInventory')
+        plyrStatus = data.get('plyrStatus')
+        plyrLocation = eval(data.get('plyrLocation'))
+        plyrHealth = int(data.get('plyrHealth'))
+        plyrHunger = int(data.get('plyrHunger'))
+        plyrSat = int(data.get('plyrSat'))
 
 
         return DataSnap(
