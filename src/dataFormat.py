@@ -17,4 +17,19 @@ class DataSnap:
 
 
 def decrypt(data): # Takes dict as input, decrypts and returns the data class
-    pass
+    try:
+        fps = int(data.get("fps"))
+        time = data.get('time')
+
+
+        return DataSnap(
+            fps = fps,
+            time = time,
+        )
+    except Exception as e:
+        print(e)
+        print('decrypt failed with data: ', data)
+        return None
+
+
+    
