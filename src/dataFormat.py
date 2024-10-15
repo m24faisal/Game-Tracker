@@ -15,4 +15,6 @@ class DataSnap:
     plyrHunger: int
     plyrSat: int
 
-    
+
+def decrypt(data): # Takes dict as input, decrypts and returns the data class
+    pass
