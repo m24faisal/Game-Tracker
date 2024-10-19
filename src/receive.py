@@ -21,6 +21,7 @@ def callback(ch, method, properties, body):
         data = body.decode('ascii')
         data = p.sub('\"', data)
         data = json.loads(data)
+        data = df.decrypt(data)
         print(data)
     except Exception as e:
         print("Could not decipher properly")
