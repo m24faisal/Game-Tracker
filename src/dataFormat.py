@@ -10,8 +10,10 @@ class DataSnap:
     plyrName: str
     plyrLocation: list[float]
     plyrHealth: int
-    plyrInventory: list[int]
-    plyrStatus: list[int]
+    # plyrInventory: list[int]
+    plyrInventory: str
+    # plyrStatus: list[int]
+    plyrStatus: str
     plyrHunger: int
     plyrSat: int
 
