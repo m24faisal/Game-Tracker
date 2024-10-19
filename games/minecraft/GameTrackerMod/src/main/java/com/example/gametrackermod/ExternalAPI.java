@@ -106,14 +106,14 @@ public class ExternalAPI {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Minecraft minecraft = Minecraft.getInstance();
         int fps = minecraft.getFps();
-        String fpsString = String.format("Current fps: %d",fps);
-        dataToken.put("fps", fpsString);
+        //String fpsString = String.format("Current fps: %d",fps);
+        dataToken.put("fps", fps + "");
         dataToken.put("time", LocalTime.now().toString());
         dataToken.put("date", LocalDate.now().toString());
-        dataToken.put("plyrName", String.valueOf(player.getName()));
+        dataToken.put("plyrName", player.getName().toString());
         dataToken.put("plyrLocation", String.valueOf(player.position()));
         dataToken.put("plyrHealth", String.valueOf(player.getHealth()));
-        dataToken.put("plyrInventory", String.valueOf(player.getInventory()));
+        dataToken.put("plyrInventory", player.getInventory().toString());
         dataToken.put("plyrStatus", "100");
         dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
         dataToken.put("plyrSat", String.valueOf(player.getFoodData().getFoodLevel()));

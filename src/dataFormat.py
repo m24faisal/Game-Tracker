@@ -9,29 +9,31 @@ class DataSnap:
 
     plyrName: str
     plyrLocation: list[float]
-    plyrHealth: int
+    plyrHealth: float
     # plyrInventory: list[int]
     plyrInventory: str
     # plyrStatus: list[int]
     plyrStatus: str
-    plyrHunger: int
-    plyrSat: int
+    plyrHunger: float
+    plyrSat: float
 
 
 def decrypt(data): # Takes dict as input, decrypts and returns the data class
     try:
-        fps = int(data.get("fps"))
+        date = data.get('date')
+        fps = float(data.get("fps"))
         time = data.get('time')
         plyrName = data.get('plyrName')
         plyrInventory = data.get('plyrInventory')
         plyrStatus = data.get('plyrStatus')
         plyrLocation = eval(data.get('plyrLocation'))
-        plyrHealth = int(data.get('plyrHealth'))
-        plyrHunger = int(data.get('plyrHunger'))
-        plyrSat = int(data.get('plyrSat'))
+        plyrHealth = float(data.get('plyrHealth'))
+        plyrHunger = float(data.get('plyrHunger'))
+        plyrSat = float(data.get('plyrSat'))
 
 
         return DataSnap(
+            date = date,
             fps = fps,
             time = time,
             plyrName = plyrName,
