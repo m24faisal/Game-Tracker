@@ -32,6 +32,13 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         return DataSnap(
             fps = fps,
             time = time,
+            plyrName = plyrName,
+            plyrInventory = plyrInventory,
+            plyrStatus = plyrStatus,
+            plyrLocation = plyrLocation,
+            plyrHealth = plyrHealth,
+            plyrHunger = plyrHunger,
+            plyrSat = plyrSat
         )
     except Exception as e:
         print(e)
