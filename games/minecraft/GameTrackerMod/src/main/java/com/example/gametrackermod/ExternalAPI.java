@@ -3,6 +3,7 @@ package com.example.gametrackermod;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import org.slf4j.Logger;
 import java.io.IOException;
@@ -106,17 +107,45 @@ public class ExternalAPI {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Minecraft minecraft = Minecraft.getInstance();
         int fps = minecraft.getFps();
-        //String fpsString = String.format("Current fps: %d",fps);
+        // 1. Main Inventory
+        String mainInv = "";
+        for(int i = 0; i < player.getInventory().items.size(); i++){
+            ItemStack stack = player.getInventory().items.get(i);
+            if (!stack.isEmpty()) {
+                mainInv += ("Main Inventory - Slot " + i + ": " +
+                        stack.getHoverName().getString() +
+                        ", Count: " + stack.getCount());
+            }
+        }
+        // 2. Armor Inventory (0-3 slots)
+        String armr = "";
+        for (int i = 0; i < player.getInventory().armor.size(); i++) {
+            ItemStack stack = player.getInventory().armor.get(i);
+
+            if (!stack.isEmpty()) {
+                armr += "Armor Slot " + i + ": " +
+                        stack.getHoverName().getString() +
+                        ", Count: " + stack.getCount();
+            }
+        }
+        // 3. Offhand Inventory (usually 1 slot)
+        String offHand = "";
+        ItemStack offhandStack = player.getInventory().offhand.getFirst();
+        if (!offhandStack.isEmpty()) {
+            offHand += "Offhand: " +
+                    offhandStack.getHoverName().getString() +
+                    ", Count: " + offhandStack.getCount();
+        }
         dataToken.put("fps", fps + "");
         dataToken.put("time", LocalTime.now().toString());
         dataToken.put("date", LocalDate.now().toString());
         dataToken.put("plyrName", player.getName().toString());
         dataToken.put("plyrLocation", String.valueOf(player.position()));
         dataToken.put("plyrHealth", String.valueOf(player.getHealth()));
-        dataToken.put("plyrInventory", player.getInventory().toString());
+        dataToken.put("plyrInventory", mainInv + armr + offHand);
         dataToken.put("plyrStatus", "100");
         dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
-        dataToken.put("plyrSat", String.valueOf(player.getFoodData().getFoodLevel()));
+        dataToken.put("plyrSat", String.valueOf(player.getFoodData().getSaturationLevel()));
 
 
         String out = StringMapToJSON(dataToken);
