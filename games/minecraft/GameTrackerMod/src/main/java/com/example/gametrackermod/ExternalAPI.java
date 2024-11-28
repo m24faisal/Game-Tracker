@@ -112,9 +112,12 @@ public class ExternalAPI {
         for(int i = 0; i < player.getInventory().items.size(); i++){
             ItemStack stack = player.getInventory().items.get(i);
             if (!stack.isEmpty()) {
-                mainInv += ("Main Inventory - Slot " + i + ": " +
+                mainInv += ("Main Inventory " + i + ": " +
                         stack.getHoverName().getString() +
-                        ", Count: " + stack.getCount());
+                        ", Count: " + stack.getCount()) + "; ";
+            } else{
+                mainInv += ("Main Inventory " + i + ": " +
+                        "None, Count: 0" ) + "; ";
             }
         }
         // 2. Armor Inventory (0-3 slots)
@@ -125,7 +128,10 @@ public class ExternalAPI {
             if (!stack.isEmpty()) {
                 armr += "Armor Slot " + i + ": " +
                         stack.getHoverName().getString() +
-                        ", Count: " + stack.getCount();
+                        ", Count: " + stack.getCount() + "; ";
+            } else{
+                armr += ("Armor Slot " + i + ": " +
+                        "None, Count: 0" ) + "; ";
             }
         }
         // 3. Offhand Inventory (usually 1 slot)
@@ -134,7 +140,11 @@ public class ExternalAPI {
         if (!offhandStack.isEmpty()) {
             offHand += "Offhand: " +
                     offhandStack.getHoverName().getString() +
-                    ", Count: " + offhandStack.getCount();
+                    ", Count: " + offhandStack.getCount() + "; ";
+            
+        } else{
+            offHand += ("Offhand: " +
+                    "None, Count: 0" ) + "; ";
         }
         dataToken.put("fps", fps + "");
         dataToken.put("time", LocalTime.now().toString());
@@ -142,7 +152,9 @@ public class ExternalAPI {
         dataToken.put("plyrName", player.getName().toString());
         dataToken.put("plyrLocation", String.valueOf(player.position()));
         dataToken.put("plyrHealth", String.valueOf(player.getHealth()));
-        dataToken.put("plyrInventory", mainInv + armr + offHand);
+        dataToken.put("plyrInventory", mainInv);
+        dataToken.put("plyrArmor", armr);
+        dataToken.put("plyrOffhand", offHand);
         dataToken.put("plyrStatus", "100");
         dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
         dataToken.put("plyrSat", String.valueOf(player.getFoodData().getSaturationLevel()));
