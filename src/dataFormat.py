@@ -73,7 +73,7 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         return None
 
 
-    
+""" if u run this file standalone it will simply test some stuff"""
 if __name__ == "__main__":
     """test stuff"""
     print("testing data format decrypt")
