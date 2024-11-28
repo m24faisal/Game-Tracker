@@ -77,7 +77,7 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
 if __name__ == "__main__":
     """test stuff"""
     print("testing data format decrypt")
-    print("eg. plyrInv")
+    print("\n\neg. plyrInv...:")
     nameCount = {
         "bub" : "123",
         "nub1" : "230",
