@@ -88,11 +88,12 @@ def save_to_csv(data, filename):
 def load_from_csv(filename):
     with open(filename, mode="r") as file:
         reader = csv.DictReader(file)
-        # Since it's a single row, convert the first row into a dictionary
-        data = next(reader)
+        # Convert each row in the csv file to a dictionary which is then added to a list of dictionaries
+        dataDicts = [row for row in reader]
         # The code noted below may or may not be needed
-        data = decrypt(data)
-        return data
+        for data in dataDicts:
+            data = decrypt(data)
+        return dataDicts
 
 
 
