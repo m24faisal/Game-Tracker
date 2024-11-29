@@ -23,6 +23,7 @@ def callback(ch, method, properties, body):
         data = json.loads(data)
         data = df.decrypt(data)
         print(data)
+        print(type(data))
     except Exception as e:
         print("Could not decipher properly")
 

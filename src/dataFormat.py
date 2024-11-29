@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import csv
 
 @dataclass 
 class Item:
@@ -71,6 +72,28 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         print(e)
         print('decrypt failed with data: ', data)
         return None
+def save_to_csv(data, filename):
+    data_dict = {"date": data.date, "fps": data.fps, "time": data.time, "plyrName": data.plyrName,
+           "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
+           "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
+           "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat}
+    # Open a CSV file to write the data
+    with open(filename, mode='w', newline="") as file:
+        writer = csv.DictWriter(file,fieldnames=data_dict.keys())
+
+        writer.writeheader()
+
+        writer.writerow(data_dict)
+
+def load_from_csv(filename):
+    with open(filename, mode="r") as file:
+        reader = csv.DictReader(file)
+        # Since it's a single row, convert the first row into a dictionary
+        data = next(reader)
+        # The code noted below may or may not be needed
+        data = decrypt(data)
+        return data
+
 
 
 """ if u run this file standalone it will simply test some stuff"""
