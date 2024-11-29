@@ -74,11 +74,11 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         return None
 def save_to_csv(data, filename):
     data_dict = {"date": data.date, "fps": data.fps, "time": data.time, "plyrName": data.plyrName,
-           "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
-           "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
-           "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat}
+        "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
+        "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
+        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat}
     # Open a CSV file to write the data
-    with open(filename, mode='w', newline="") as file:
+    with open(filename, mode='a', newline="") as file:
         writer = csv.DictWriter(file,fieldnames=data_dict.keys())
 
         writer.writeheader()

@@ -4,7 +4,7 @@ import dataFormat as df
 import json
 import re
 
-
+dataSnaps = []
 # Connect to RabbitMQ server
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
@@ -23,7 +23,9 @@ def callback(ch, method, properties, body):
         data = json.loads(data)
         data = df.decrypt(data)
         print(data)
-        print(type(data))
+        dataSnaps.append(data)
+        for data in dataSnaps:
+            df.save_to_csv(data, "playerData.csv")
     except Exception as e:
         print("Could not decipher properly")
 
