@@ -27,8 +27,9 @@ def callback(ch, method, properties, body):
         data = df.decrypt(data)
         print(data)
         dataSnaps.append(data)
-        for data in dataSnaps:
-            df.save_to_csv(data, fName)
+        df.save_to_csv(data, fName)
+        #for data in dataSnaps:
+            #df.save_to_csv(data, fName)
     except Exception as e:
         print("Could not decipher properly")
 
