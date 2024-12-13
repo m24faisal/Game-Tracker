@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -129,6 +131,18 @@ public class GameTrackerMod
 //            }
 //        }
 //    }
+    @SubscribeEvent
+    public  void onServerTick(TickEvent.ServerTickEvent event) throws IOException {
+        MinecraftServer server = event.getServer();
+        if (event.phase == TickEvent.Phase.END) { // Use END phase to avoid running twice per tick
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                String message = player.getName().getString() + "tick, sent data";
+                // externalAPI.sendMessage(message);
+                PlayerEvent.PlayerLoggedInEvent event1 = new PlayerEvent.PlayerLoggedInEvent(player);
+                externalAPI.sendData(event1);
+            }
+        }
+    }
 
 
     private void commonSetup(final FMLCommonSetupEvent event)
