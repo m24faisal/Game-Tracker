@@ -33,6 +33,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+import java.time.*;
 
 
 import java.io.File;
@@ -98,36 +99,36 @@ public class GameTrackerMod
         externalAPI = new ExternalAPI(this);
     }
 
-    @SubscribeEvent
-    public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
-        // Check if the entity jumping is a player
-        if (event.getEntity() instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) event.getEntity();
-
-            // Send a message to the player's chat when they jump
-            player.sendSystemMessage(Component.literal("You jumped!"));
-
-            //say "I Jumped" on player's behalf
-            try{
-                player.getServer().getCommands().getDispatcher().execute(
-                        "say I just jumped!", // Command to execute
-                        player.createCommandSourceStack().withSuppressedOutput()// Command source (player)
-
-                );
-
-                String message = player.getName().getString() + " jumped!";
-                // externalAPI.sendMessage(message);
-                PlayerEvent.PlayerLoggedInEvent event1 = new PlayerEvent.PlayerLoggedInEvent(player);
-                externalAPI.sendData(event1);
-
-                //externalAPI.sendMessage(message);
-                event1 = new PlayerEvent.PlayerLoggedInEvent(player);
-                externalAPI.sendData(event1);
-            } catch (Exception e) {
-                System.out.println("Exception in sending player chat messages");
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+//        // Check if the entity jumping is a player
+//        if (event.getEntity() instanceof ServerPlayer) {
+//            ServerPlayer player = (ServerPlayer) event.getEntity();
+//
+//            // Send a message to the player's chat when they jump
+//            player.sendSystemMessage(Component.literal("You jumped!"));
+//
+//            //say "I Jumped" on player's behalf
+//            try{
+//                player.getServer().getCommands().getDispatcher().execute(
+//                        "say I just jumped!", // Command to execute
+//                        player.createCommandSourceStack().withSuppressedOutput()// Command source (player)
+//
+//                );
+//
+//                String message = player.getName().getString() + " jumped!";
+//                // externalAPI.sendMessage(message);
+//                PlayerEvent.PlayerLoggedInEvent event1 = new PlayerEvent.PlayerLoggedInEvent(player);
+//                externalAPI.sendData(event1);
+//
+//                //externalAPI.sendMessage(message);
+//                event1 = new PlayerEvent.PlayerLoggedInEvent(player);
+//                externalAPI.sendData(event1);
+//            } catch (Exception e) {
+//                System.out.println("Exception in sending player chat messages");
+//            }
+//        }
+//    }
 
 
     private void commonSetup(final FMLCommonSetupEvent event)
