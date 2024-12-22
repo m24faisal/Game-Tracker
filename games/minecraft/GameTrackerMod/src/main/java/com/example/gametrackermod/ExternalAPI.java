@@ -3,6 +3,8 @@ package com.example.gametrackermod;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import org.slf4j.Logger;
@@ -11,13 +13,16 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Collection;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.client.Minecraft;
-
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 
 
 public class ExternalAPI {
@@ -155,7 +160,28 @@ public class ExternalAPI {
         dataToken.put("plyrInventory", mainInv);
         dataToken.put("plyrArmor", armr);
         dataToken.put("plyrOffhand", offHand);
-        dataToken.put("plyrStatus", "100");
+        // 4. Player Statistics Information
+        Collection<MobEffectInstance> activeEffects = player.getActiveEffects();
+        if (activeEffects.isEmpty()){
+            dataToken.put("plyrStat","No Active effects");
+        } else{
+            for(MobEffectInstance  effectInstance: activeEffects){
+                MobEffect effect = effectInstance.getEffect().value();
+                String effectName = effect.getDisplayName().getString();
+                String effectType = effect.getCategory().toString();
+                int duration = effectInstance.getDuration();
+                int amplifier = effectInstance.getAmplifier();
+                String effectStrength = "Level " + (amplifier + 1);
+
+                String effectDetails = " Type: " + effectType +
+                        ", Strength: " + effectStrength +
+                        ", Duration: " + (duration / 20) + " seconds" + // Not dividing by 20 gives the value in ticks
+                        ", Amplifier Level: " + amplifier; // Instead of seconds
+
+                dataToken.put("plyrStatus",effectName + "-->" + effectDetails);
+
+            }
+        }
         dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
         dataToken.put("plyrSat", String.valueOf(player.getFoodData().getSaturationLevel()));
 
