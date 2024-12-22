@@ -6,7 +6,13 @@ class Item:
     name : str
     count : int
     meta : str
-
+@dataclass
+class StatusEffects:
+    effectName: str
+    effectType: str
+    effectStrength: int
+    effectAmplifier: int
+    effectDuration: int
 @dataclass
 class DataSnap:
     fps: float
@@ -21,7 +27,7 @@ class DataSnap:
     plyrArmor: str
     plyrOffhand: str
     # plyrStatus: list[int]
-    plyrStatus: str
+    plyrStatus: list[StatusEffects]
     plyrHunger: float
     plyrSat: float
 
@@ -46,7 +52,7 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrInventory = decryptInv(data.get('plyrInventory'))
         plyrArmor = data.get('plyrArmor')
         plyrOffhand = data.get('plyrOffhand')
-        plyrStatus = data.get('plyrStatus')
+        plyrStatus = eval(data.get('plyrStatus'))
         plyrLocation = eval(data.get('plyrLocation'))
         plyrHealth = float(data.get('plyrHealth'))
         plyrHunger = float(data.get('plyrHunger'))
