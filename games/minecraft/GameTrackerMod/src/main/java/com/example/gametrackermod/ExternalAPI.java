@@ -163,7 +163,7 @@ public class ExternalAPI {
         // 4. Player Statistics Information
         Collection<MobEffectInstance> activeEffects = player.getActiveEffects();
         if (activeEffects.isEmpty()){
-            dataToken.put("plyrStat","No Active effects");
+            dataToken.put("plyrStatus","No Active effects");
         } else{
             for(MobEffectInstance  effectInstance: activeEffects){
                 MobEffect effect = effectInstance.getEffect().value();
