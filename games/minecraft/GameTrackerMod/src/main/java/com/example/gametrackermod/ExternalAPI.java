@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.core.Direction;
 
 public class ExternalAPI {
     private final Logger LOGGER;
@@ -182,7 +183,16 @@ public class ExternalAPI {
         dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
         dataToken.put("plyrSat", String.valueOf(player.getFoodData().getSaturationLevel()));
         // 5. Player Viewing Direction Info
-
+        float pitch = player.getXRot();
+        float yaw = player.getYRot();
+        double x = -Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
+        double y = -Math.sin(Math.toRadians(pitch));
+        double z = -Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
+        double[] viewDirection = {x,y,z};
+        dataToken.put("plyrView", Arrays.toString(viewDirection));
+        // 6. Player Facing Direction Info (North, South, East, West)
+        Direction direction = player.getDirection();
+        dataToken.put("plyrFacing",String.valueOf(direction));
 
 
         String out = StringMapToJSON(dataToken);

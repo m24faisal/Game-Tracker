@@ -22,14 +22,14 @@ class DataSnap:
     plyrName: str
     plyrLocation: list[float]
     plyrHealth: float
-    # plyrInventory: list[int]
     plyrInventory: list[Item]
     plyrArmor: str
     plyrOffhand: str
-    # plyrStatus: list[int]
     plyrStatus: list[StatusEffects]
     plyrHunger: float
     plyrSat: float
+    plyrView: list[float]
+    plyrFacing: str 
 
 def cleanSplit( source: str, token: str):
     return [s.strip() for s in source.split(token) if s.strip() != '']
@@ -57,7 +57,8 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrHealth = float(data.get('plyrHealth'))
         plyrHunger = float(data.get('plyrHunger'))
         plyrSat = float(data.get('plyrSat'))
-        
+        plyrView = eval(data.get('plyrView'))
+        plyrFacing = data.get('plyrFacing')
         
 
         return DataSnap(
@@ -72,7 +73,9 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
             plyrLocation = plyrLocation,
             plyrHealth = plyrHealth,
             plyrHunger = plyrHunger,
-            plyrSat = plyrSat
+            plyrSat = plyrSat,
+            plyrView = plyrView,
+            plyrFacing = plyrFacing
         )
     except Exception as e:
         print(e)
@@ -82,7 +85,7 @@ def save_to_csv(data, filename):
     data_dict = {"date": data.date, "fps": data.fps, "time": data.time, "plyrName": data.plyrName,
         "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
         "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
-        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat}
+        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing}
     # Open a CSV file to write the data
     with open(filename, mode='a', newline="") as file:
         writer = csv.DictWriter(file,fieldnames=data_dict.keys())
