@@ -160,11 +160,9 @@ public class ExternalAPI {
         dataToken.put("plyrArmor", armr);
         dataToken.put("plyrOffhand", offHand);
         // 4. Player Statistics Information
-        ArrayList<statEffects> effectsList = new ArrayList<>();
         Collection<MobEffectInstance> activeEffects = player.getActiveEffects();
         if (activeEffects.isEmpty()){
-            effectsList.add(new statEffects("N/A","N/A",0,0,0));
-            dataToken.put("plyrStatus",String.valueOf(effectsList));
+            dataToken.put("plyrStatus","No current Effects");
         } else{
             for(MobEffectInstance  effectInstance: activeEffects){
                 MobEffect effect = effectInstance.getEffect().value();
@@ -172,11 +170,13 @@ public class ExternalAPI {
                 String effectType = effect.getCategory().toString();
                 int duration = effectInstance.getDuration();
                 int amplifier = effectInstance.getAmplifier();
-                int effectStrength = amplifier + 1;
-                int durationSecs = duration / 20;
-                effectsList.add(new statEffects(effectName,effectType,effectStrength,amplifier,durationSecs));
+                String effectStrength =  "Level: "+ (amplifier + 1);
+                String effectDetails = " Type: " + effectType +
+                        ", Strength: " + effectStrength +
+                        ", Duration: " + (duration / 20) + " seconds" +
+                        ", Amplifier Level: " + amplifier;
 
-                dataToken.put("plyrStatus", String.valueOf(effectsList));
+                dataToken.put("plyrStatus", effectName + " --> " + effectDetails);
 
             }
         }

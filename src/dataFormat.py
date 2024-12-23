@@ -1,18 +1,12 @@
 from dataclasses import dataclass
 import csv
+from typing import Any
 
 @dataclass 
 class Item:
     name : str
     count : int
     meta : str
-@dataclass
-class StatusEffects:
-    effectName: str
-    effectType: str
-    effectStrength: int
-    effectAmplifier: int
-    effectDuration: int
 @dataclass
 class DataSnap:
     fps: float
@@ -25,7 +19,7 @@ class DataSnap:
     plyrInventory: list[Item]
     plyrArmor: str
     plyrOffhand: str
-    plyrStatus: list[StatusEffects]
+    plyrStatus: str
     plyrHunger: float
     plyrSat: float
     plyrView: list[float]
@@ -52,7 +46,7 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrInventory = decryptInv(data.get('plyrInventory'))
         plyrArmor = data.get('plyrArmor')
         plyrOffhand = data.get('plyrOffhand')
-        plyrStatus = eval(data.get('plyrStatus'))
+        plyrStatus = data.get('plyrStatus')
         plyrLocation = eval(data.get('plyrLocation'))
         plyrHealth = float(data.get('plyrHealth'))
         plyrHunger = float(data.get('plyrHunger'))
