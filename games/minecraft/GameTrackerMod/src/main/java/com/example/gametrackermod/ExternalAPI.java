@@ -176,7 +176,7 @@ public class ExternalAPI {
                         ", Duration: " + (duration / 20.0) + " seconds" +
                         ", Amplifier Level: " + amplifier; // IS strength
 
-                stat.append(effectName).append(" --> ").append(effectDetails).append('; ');
+                stat.append(effectName).append(" --> ").append(effectDetails).append("; ");
 
             }
 
