@@ -162,23 +162,25 @@ public class ExternalAPI {
         // 4. Player Statistics Information
         Collection<MobEffectInstance> activeEffects = player.getActiveEffects();
         if (activeEffects.isEmpty()){
-            dataToken.put("plyrStatus","No current Effects");
+            dataToken.put("plyrStatus","None");
         } else{
+            StringBuilder stat = new StringBuilder();
             for(MobEffectInstance  effectInstance: activeEffects){
                 MobEffect effect = effectInstance.getEffect().value();
                 String effectName = effect.getDisplayName().getString();
                 String effectType = effect.getCategory().toString();
                 int duration = effectInstance.getDuration();
                 int amplifier = effectInstance.getAmplifier();
-                String effectStrength =  "Level: "+ (amplifier + 1);
+                //String effectStrength =  "Level: "+ (amplifier + 1);
                 String effectDetails = " Type: " + effectType +
-                        ", Strength: " + effectStrength +
-                        ", Duration: " + (duration / 20) + " seconds" +
-                        ", Amplifier Level: " + amplifier;
+                        ", Duration: " + (duration / 20.0) + " seconds" +
+                        ", Amplifier Level: " + amplifier; // IS strength
 
-                dataToken.put("plyrStatus", effectName + " --> " + effectDetails);
+                stat.append(effectName).append(" --> ").append(effectDetails).append('; ');
 
             }
+
+            dataToken.put("plyrStatus", stat.toString());
         }
         dataToken.put("plyrHunger", String.valueOf(player.getFoodData().getFoodLevel()));
         dataToken.put("plyrSat", String.valueOf(player.getFoodData().getSaturationLevel()));

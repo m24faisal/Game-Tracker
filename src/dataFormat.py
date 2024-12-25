@@ -7,6 +7,15 @@ class Item:
     name : str
     count : int
     meta : str
+
+@dataclass
+class Effect:
+    name : str
+    type : str
+    duration : float
+    amplifierLevel : int
+
+
 @dataclass
 class DataSnap:
     fps: float
@@ -19,7 +28,7 @@ class DataSnap:
     plyrInventory: list[Item]
     plyrArmor: str
     plyrOffhand: str
-    plyrStatus: str
+    plyrStatus: list[Effect]
     plyrHunger: float
     plyrSat: float
     plyrView: list[float]
@@ -37,6 +46,27 @@ def decryptInv(plyrInventory : str):
         out.append(Item(name = itemName, count = int(itemCount.strip()), meta = ""))
     return out
 
+def decryptStatus(status : str):
+    out = []
+    status = status.strip()
+    if(status == 'None'):
+        return out
+    else:
+        for stat in cleanSplit(status, ";"):
+            name, fragments = cleanSplit(stat, "-->")
+            fragmentVals = []
+            for fragment in cleanSplit(fragments, ','):
+                fragmentVals.append(cleanSplit(fragment, ":")[1])
+
+            out.append(
+                Effect( name = name, 
+                        type = fragmentVals[0], 
+                        duration= float(fragmentVals[1]),
+                        amplifierLevel= int(fragmentVals[2])
+                )
+            )
+    return out
+
 def decrypt(data): # Takes dict as input, decrypts and returns the data class
     try:
         date = data.get('date')
@@ -46,7 +76,7 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrInventory = decryptInv(data.get('plyrInventory'))
         plyrArmor = data.get('plyrArmor')
         plyrOffhand = data.get('plyrOffhand')
-        plyrStatus = data.get('plyrStatus')
+        plyrStatus = decryptStatus(data.get('plyrStatus'))
         plyrLocation = eval(data.get('plyrLocation'))
         plyrHealth = float(data.get('plyrHealth'))
         plyrHunger = float(data.get('plyrHunger'))
