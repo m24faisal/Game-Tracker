@@ -219,9 +219,8 @@ public class ExternalAPI {
         dataToken.put("plyrRideVehicle",rideMsg);
         // 9. Track server player's momentum
         Vec3 velocity = player.getDeltaMovement();
-        double speed = velocity.length();
-        dataToken.put("plyrSpeed",String.valueOf(speed));
-        dataToken.put("plyrMomentum",String.valueOf(velocity));
+        double momentum = velocity.length();
+        dataToken.put("plyrMomentum",String.valueOf(momentum));
         // Output data stored in out variable
         String out = StringMapToJSON(dataToken);
         //send RabbitMQ message

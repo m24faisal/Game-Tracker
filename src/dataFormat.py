@@ -35,7 +35,6 @@ class DataSnap:
     plyrSelectedItem: str
     plyrRideState: bool
     plyrRideVehicle: str
-    plyrSpeed: float
     plyrMomentum: float 
 
 def string_to_bool(value):
@@ -104,7 +103,6 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrSelectedItem = data.get('plyrSelectedItem'),
         plyrRideState = string_to_bool(data.get('plyrRideState')),
         plyrRideVehicle = data.get('plyrRideVehicle'),
-        plyrSpeed = float(data.get('plyrSpeed')),
         plyrMomentum = float(data.get('plyrMomentum'))
 
         return DataSnap(
@@ -126,7 +124,6 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
             plyrSelectedItem = plyrSelectedItem,
             plyrRideState = plyrRideState,
             plyrRideVehicle = plyrRideVehicle,
-            plyrSpeed = plyrSpeed,
             plyrMomentum = plyrMomentum
         )
     except Exception as e:
@@ -139,7 +136,7 @@ def save_to_csv(data, filename):
         "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
         "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing,
         "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem,
-        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle, "plyrSpeed": data.plyrSpeed,
+        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle,
         "plyrMomentum": data.plyrMomentum}
     # Open a CSV file to write the data
     with open(filename, mode='a', newline="") as file:
