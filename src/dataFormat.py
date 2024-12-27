@@ -34,7 +34,9 @@ class DataSnap:
     plyrSelectedSlot: int
     plyrSelectedItem: str
     plyrRideState: bool
-    plyrRideVehicle: str 
+    plyrRideVehicle: str
+    plyrSpeed: float
+    plyrMomentum: float 
 
 def string_to_bool(value):
     truthy_values = {"true", "1", "yes", "on"}
@@ -101,8 +103,9 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrSelectedSlot = int(data.get('plyrSelectedSlot')),
         plyrSelectedItem = data.get('plyrSelectedItem'),
         plyrRideState = string_to_bool(data.get('plyrRideState')),
-        plyrRideVehicle = data.get('plyrRideVehicle')
-        
+        plyrRideVehicle = data.get('plyrRideVehicle'),
+        plyrSpeed = float(data.get('plyrSpeed')),
+        plyrMomentum = float(data.get('plyrMomentum'))
 
         return DataSnap(
             date = date,
@@ -122,7 +125,9 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
             plyrSelectedSlot = plyrSelectedSlot,
             plyrSelectedItem = plyrSelectedItem,
             plyrRideState = plyrRideState,
-            plyrRideVehicle = plyrRideVehicle
+            plyrRideVehicle = plyrRideVehicle,
+            plyrSpeed = plyrSpeed,
+            plyrMomentum = plyrMomentum
         )
     except Exception as e:
         print(e)
@@ -134,7 +139,8 @@ def save_to_csv(data, filename):
         "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
         "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing,
         "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem,
-        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle}
+        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle, "plyrSpeed": data.plyrSpeed,
+        "plyrMomentum": data.plyrMomentum}
     # Open a CSV file to write the data
     with open(filename, mode='a', newline="") as file:
         writer = csv.DictWriter(file,fieldnames=data_dict.keys())

@@ -25,6 +25,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class ExternalAPI {
     private final Logger LOGGER;
@@ -216,7 +217,11 @@ public class ExternalAPI {
         }
         dataToken.put("plyrRideState", String.valueOf(ridingState));
         dataToken.put("plyrRideVehicle",rideMsg);
-
+        // 9. Track server player's momentum
+        Vec3 velocity = player.getDeltaMovement();
+        double speed = velocity.length();
+        dataToken.put("plyrSpeed",String.valueOf(speed));
+        dataToken.put("plyrMomentum",String.valueOf(velocity));
         // Output data stored in out variable
         String out = StringMapToJSON(dataToken);
         //send RabbitMQ message
