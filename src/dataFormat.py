@@ -115,7 +115,8 @@ def save_to_csv(data, filename):
     data_dict = {"date": data.date, "fps": data.fps, "time": data.time, "plyrName": data.plyrName,
         "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
         "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
-        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing}
+        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing,
+        "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem}
     # Open a CSV file to write the data
     with open(filename, mode='a', newline="") as file:
         writer = csv.DictWriter(file,fieldnames=data_dict.keys())
