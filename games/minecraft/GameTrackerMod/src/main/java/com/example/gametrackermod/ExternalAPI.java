@@ -100,6 +100,9 @@ public class ExternalAPI {
         System.out.println(" [x] Sent '" + message + "'");
         LOGGER.info("Sent: {}, Queue: {}", message, DEBUG_QUEUE_NAME);
     }
+    public static boolean isPlayerRiding(ServerPlayer player){
+        return player.getVehicle() != null;
+    }
     @SubscribeEvent
     public void sendData(PlayerEvent.PlayerLoggedInEvent event) throws IOException {
         if(channel == null){
@@ -202,6 +205,18 @@ public class ExternalAPI {
         ItemStack selectedItem = player.getInventory().getItem(selectedSlot);
         dataToken.put("plyrSelectedSlot", String.valueOf(selectedSlot));
         dataToken.put("plyrSelectedItem",selectedItem.toString());
+        // 8. Player Riding State -- Function code written above sendData function
+        boolean ridingState = isPlayerRiding(player);
+        String rideMsg;
+        if (ridingState){
+            rideMsg = "Player is currently riding " + player.getVehicle().getName().toString();
+        }
+        else{
+            rideMsg = "Player is not currently riding anything";
+        }
+        dataToken.put("plyrRideState", String.valueOf(ridingState));
+        dataToken.put("plyrRideVehicle",rideMsg);
+
         // Output data stored in out variable
         String out = StringMapToJSON(dataToken);
         //send RabbitMQ message

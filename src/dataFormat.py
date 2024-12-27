@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 import csv
-from typing import Any
-
 @dataclass 
 class Item:
     name : str
@@ -34,8 +32,23 @@ class DataSnap:
     plyrView: list[float]
     plyrFacing: str
     plyrSelectedSlot: int
-    plyrSelectedItem: str 
+    plyrSelectedItem: str
+    plyrRideState: bool
+    plyrRideVehicle: str 
 
+def string_to_bool(value):
+    truthy_values = {"true", "1", "yes", "on"}
+    falsy_values = {"false", "0", "no", "off"}
+    
+    # Normalize the input
+    value = value.strip().lower()
+    
+    if value in truthy_values:
+        return True
+    elif value in falsy_values:
+        return False
+    else:
+        raise ValueError(f"Cannot convert '{value}' to a boolean")
 def cleanSplit( source: str, token: str):
     return [s.strip() for s in source.split(token) if s.strip() != '']
 
@@ -86,7 +99,9 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrView = eval(data.get('plyrView'))
         plyrFacing = data.get('plyrFacing'),
         plyrSelectedSlot = int(data.get('plyrSelectedSlot')),
-        plyrSelectedItem = data.get('plyrSelectedItem')
+        plyrSelectedItem = data.get('plyrSelectedItem'),
+        plyrRideState = string_to_bool(data.get('plyrRideState')),
+        plyrRideVehicle = data.get('plyrRideVehicle')
         
 
         return DataSnap(
@@ -116,7 +131,8 @@ def save_to_csv(data, filename):
         "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
         "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
         "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing,
-        "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem}
+        "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem,
+        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle}
     # Open a CSV file to write the data
     with open(filename, mode='a', newline="") as file:
         writer = csv.DictWriter(file,fieldnames=data_dict.keys())
