@@ -210,7 +210,7 @@ public class ExternalAPI {
         boolean ridingState = isPlayerRiding(player);
         String rideMsg;
         if (ridingState){
-            rideMsg = "Player is currently riding " + player.getVehicle().getName().toString();
+            rideMsg = "Player is currently riding " + Objects.requireNonNull(player.getVehicle()).getName();
         }
         else{
             rideMsg = "Player is not currently riding anything";
