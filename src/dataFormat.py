@@ -32,7 +32,9 @@ class DataSnap:
     plyrHunger: float
     plyrSat: float
     plyrView: list[float]
-    plyrFacing: str 
+    plyrFacing: str
+    plyrSelectedSlot: int
+    plyrSelectedItem: str 
 
 def cleanSplit( source: str, token: str):
     return [s.strip() for s in source.split(token) if s.strip() != '']
@@ -82,7 +84,9 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         plyrHunger = float(data.get('plyrHunger'))
         plyrSat = float(data.get('plyrSat'))
         plyrView = eval(data.get('plyrView'))
-        plyrFacing = data.get('plyrFacing')
+        plyrFacing = data.get('plyrFacing'),
+        plyrSelectedSlot = int(data.get('plyrSelectedSlot')),
+        plyrSelectedItem = data.get('plyrSelectedItem')
         
 
         return DataSnap(
@@ -99,7 +103,9 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
             plyrHunger = plyrHunger,
             plyrSat = plyrSat,
             plyrView = plyrView,
-            plyrFacing = plyrFacing
+            plyrFacing = plyrFacing,
+            plyrSelectedSlot = plyrSelectedSlot,
+            plyrSelectedItem = plyrSelectedItem
         )
     except Exception as e:
         print(e)

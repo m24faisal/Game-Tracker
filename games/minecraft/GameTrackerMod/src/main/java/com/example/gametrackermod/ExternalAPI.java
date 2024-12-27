@@ -5,6 +5,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 
 public class ExternalAPI {
     private final Logger LOGGER;
@@ -195,11 +197,13 @@ public class ExternalAPI {
         // 6. Player Facing Direction Info (North, South, East, West)
         Direction direction = player.getDirection();
         dataToken.put("plyrFacing",String.valueOf(direction));
-
-
+        // 7. Hotbar Selection Code
+        int selectedSlot = player.getInventory().selected;
+        ItemStack selectedItem = player.getInventory().getItem(selectedSlot);
+        dataToken.put("plyrSelectedSlot", String.valueOf(selectedSlot));
+        dataToken.put("plyrSelectedItem",selectedItem.toString());
+        // Output data stored in out variable
         String out = StringMapToJSON(dataToken);
-
-
         //send RabbitMQ message
         channel.basicPublish("", DATA_QUEUE_NAME, null, out.getBytes());
         System.out.println(" [x] Sent '" + out + "'");
