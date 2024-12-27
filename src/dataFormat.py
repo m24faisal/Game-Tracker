@@ -120,7 +120,9 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
             plyrView = plyrView,
             plyrFacing = plyrFacing,
             plyrSelectedSlot = plyrSelectedSlot,
-            plyrSelectedItem = plyrSelectedItem
+            plyrSelectedItem = plyrSelectedItem,
+            plyrRideState = plyrRideState,
+            plyrRideVehicle = plyrRideVehicle
         )
     except Exception as e:
         print(e)
