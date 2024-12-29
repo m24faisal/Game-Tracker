@@ -4,10 +4,10 @@ import mss
 import time
 
 # Screen resolution (adjust to your screen size)
-SCREEN_SIZE = (1920, 1080)  # Replace with your screen resolution
+SCREEN_SIZE = (640, 480)  # Replace with your screen resolution
 
 # Output file
-output = "screen_record.avi"
+output = f"screen_record{time.time()}.avi"
 
 # Define the codec and create a VideoWriter object
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
