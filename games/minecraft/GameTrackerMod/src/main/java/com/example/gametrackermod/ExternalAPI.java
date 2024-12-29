@@ -178,11 +178,23 @@ public class ExternalAPI {
                 int duration = effectInstance.getDuration();
                 int amplifier = effectInstance.getAmplifier();
                 //String effectStrength =  "Level: "+ (amplifier + 1);
-                String effectDetails = " Type: " + effectType +
-                        ", Duration: " + (duration / 20.0) + " seconds" +
+                /*String effectDetails = " Type: " + effectType +
+                        ", Duration: " + (duration / 20.0) + // seconds
                         ", Amplifier Level: " + amplifier; // IS strength
+                */
+                stat.append("Name: ")
+                        .append(effectName)
 
-                stat.append(effectName).append(" --> ").append(effectDetails).append("; ");
+                        .append(", Type: ")
+                        .append(effectType)
+
+                        .append(", Duration in Seconds: ") // seconds
+                        .append((duration / 20.0))
+
+                        .append(", Amplifier Level: ") // seconds
+                        .append(amplifier)
+
+                        .append("; ");
 
             }
 

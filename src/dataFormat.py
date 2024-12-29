@@ -69,16 +69,15 @@ def decryptStatus(status : str):
         return out
     else:
         for stat in cleanSplit(status, ";"):
-            name, fragments = cleanSplit(stat, "-->")
             fragmentVals = []
-            for fragment in cleanSplit(fragments, ','):
+            for fragment in cleanSplit(status, ','):
                 fragmentVals.append(cleanSplit(fragment, ":")[1])
 
             out.append(
-                Effect( name = name, 
-                        type = fragmentVals[0], 
-                        duration= float(fragmentVals[1]),
-                        amplifierLevel= int(fragmentVals[2])
+                Effect( name = fragmentVals[0], 
+                        type = fragmentVals[1], 
+                        duration= float(fragmentVals[2]),
+                        amplifierLevel= int(fragmentVals[3])
                 )
             )
     return out
