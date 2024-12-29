@@ -7,11 +7,11 @@ import time
 SCREEN_SIZE = (1920, 1080)  # Replace with your screen resolution
 
 # Output file
-output = "screen_record.avi"
+output = f"screen_record{time.time()}.avi"
 
 # Define the codec and create a VideoWriter object
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
-fps = 20.0
+fps = 60.0
 out = cv2.VideoWriter(output, fourcc, fps, SCREEN_SIZE)
 
 # Duration of recording (in seconds)
