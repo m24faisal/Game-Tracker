@@ -4,7 +4,7 @@ import mss
 import time
 
 # Screen resolution (adjust to your screen size)
-SCREEN_SIZE = (640, 480)  # Replace with your screen resolution
+SCREEN_SIZE = (1280, 720)  # Replace with your screen resolution
 
 # Output file
 output = f"screen_record{time.time()}.avi"
