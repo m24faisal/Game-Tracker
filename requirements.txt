@@ -3,3 +3,5 @@ GCC
 G++
 RabbitMQ - Python
 Docker
+OpenCV python, MSS
+Minecraft - Java Runtime 22+
