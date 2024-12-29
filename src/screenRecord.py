@@ -15,7 +15,7 @@ fps = 60.0
 out = cv2.VideoWriter(output, fourcc, fps, SCREEN_SIZE)
 
 # Duration of recording (in seconds)
-record_seconds = 10
+record_seconds = 30
 
 with mss.mss() as sct:
     monitor = {"top": 0, "left": 0, "width": SCREEN_SIZE[0], "height": SCREEN_SIZE[1]}
