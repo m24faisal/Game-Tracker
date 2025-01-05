@@ -7,7 +7,7 @@ from datetime import datetime
 
 dataSnaps = []
 timeStamp = datetime.now().strftime("%m-%d-%Y-%H-%M-%S")
-fName = "playerData_" + timeStamp + ".csv"
+fName = "../save/playerData_" + timeStamp + ".csv"
 # Connect to RabbitMQ server
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
