@@ -8,50 +8,58 @@ import os
 def stretch_video(input_file, output_file, target_duration):
     """
     Stretches a video to a fixed length using FFmpeg.
-    
-    Args:
-        input_file (str): Path to the input video file.
-        output_file (str): Path to the output video file.
-        target_duration (float): Desired duration of the output video in seconds.
-    
-    Returns:
-        bool: True if the operation is successful, False otherwise.
     """
-
-    print("input:", os.path.exists(input_file),", output:",os.path.exists(output_file))
-    input_file, output_file = os.path.abspath(input_file), os.path.abspath(output_file) # uptdates to absolute path for both input and output
-    print("input:", os.path.exists(input_file),", output:",os.path.exists(output_file))
     try:
-        # Get the original duration of the video using FFmpeg
+        # Resolve absolute paths
+        input_file = os.path.abspath(input_file)
+        output_file = os.path.abspath(output_file)
+
+        # Check if input file exists
+        if not os.path.exists(input_file):
+            raise FileNotFoundError(f"Input file '{input_file}' not found.")
+        
+        # Get the original duration of the video using FFprobe
         result = subprocess.run(
             [
-                "ffprobe", 
-                "-v", "error", 
-                "-show_entries", "format=duration", 
-                "-of", "default=noprint_wrappers=1:nokey=1", 
+                "ffprobe",
+                "-v", "error",
+                "-show_entries", "format=duration",
+                "-of", "default=noprint_wrappers=1:nokey=1",
                 input_file
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
         )
+        
+        if result.returncode != 0:
+            raise RuntimeError(f"FFprobe error: {result.stderr}")
+        
         original_duration = float(result.stdout.strip())
-        
-        # Calculate the stretch factor
         stretch_factor = target_duration / original_duration
-        
-        # Run the FFmpeg command to stretch the video
+
+        # Check valid stretch factor
+        if stretch_factor <= 0:
+            raise ValueError("Target duration must be greater than 0.")
+
+        # Run the FFmpeg command
         command = [
             "ffmpeg",
-            "-i", input_file,  # Input file
-            "-vf", f"setpts={1/stretch_factor}*PTS",  # Adjust playback speed
-            "-af", f"atempo={stretch_factor}",  # Adjust audio speed
-            output_file  # Output file
+            "-i", input_file,
+            "-vf", f"setpts={1/stretch_factor}*PTS",
+            "-af", f"atempo={stretch_factor}",
+            output_file
         ]
-        
+        print(f"Running command: {' '.join(command)}")  # Debugging output
         subprocess.run(command, check=True)
         
-        return os.path.exists(output_file)  # Check if the output file was created
+        # Check if output file was created
+        if not os.path.exists(output_file):
+            raise RuntimeError("FFmpeg failed to create the output file.")
+        
+        print(f"Video successfully stretched to {target_duration} seconds.")
+        return True
+    
     except Exception as e:
         print(f"An error occurred: {e}")
         return False
