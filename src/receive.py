@@ -4,10 +4,14 @@ import dataFormat as df
 import json
 import re
 from datetime import datetime
+import os
 
 dataSnaps = []
 timeStamp = datetime.now().strftime("%m-%d-%Y-%H-%M-%S")
-fName = "../save/playerData_" + timeStamp + ".csv"
+direct = "../saves/"
+csvName = "playerData_" + timeStamp + ".csv"
+fName = os.path.join(direct, csvName)
+os.makedirs(direct, exist_ok=True) 
 # Connect to RabbitMQ server
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
