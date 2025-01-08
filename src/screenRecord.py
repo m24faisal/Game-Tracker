@@ -35,7 +35,13 @@ def stretch_video(input_file, output_file, target_duration):
         if result.returncode != 0:
             raise RuntimeError(f"FFprobe error: {result.stderr}")
         
-        original_duration = float(result.stdout.strip())
+        # The main issue here is that FFMPEG does not recognize the fact that a screen recording is happening.
+        # @TODO: Fix this issue
+        original_duration = result.stdout.strip()
+        # original_duration = float(result.stdout.strip())
+        print(f"Original video duration: {original_duration} seconds.")
+        
+        # Calculate the stretch factor
         stretch_factor = target_duration / original_duration
 
         # Check valid stretch factor
