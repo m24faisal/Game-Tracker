@@ -5,13 +5,16 @@ import json
 import re
 from datetime import datetime
 import os
+import dbManage as db
 
 dataSnaps = []
-timeStamp = datetime.now().strftime("%m-%d-%Y-%H-%M-%S")
+db.createDatabase()
+timeStamp = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
 direct = "../saves/"
 csvName = "playerData_" + timeStamp + ".csv"
 fName = os.path.join(direct, csvName)
-os.makedirs(direct, exist_ok=True) 
+os.makedirs(direct, exist_ok=True)
+tName = "playerData_" + timeStamp 
 # Connect to RabbitMQ server
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
@@ -32,6 +35,7 @@ def callback(ch, method, properties, body):
         print(data)
         dataSnaps.append(data)
         df.save_to_csv(data, fName)
+        df.save_to_database(data, tName)
         #for data in dataSnaps:
             #df.save_to_csv(data, fName)
     except Exception as e:

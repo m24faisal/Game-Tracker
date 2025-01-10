@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import csv
+import dbManage as db
 @dataclass 
 class Item:
     name : str
@@ -155,7 +156,16 @@ def load_from_csv(filename):
             data = decrypt(data)
         return dataDicts
 
-
+def save_to_database(data,table_name):
+    data_dict = {"date": data.date, "fps": data.fps, "time": data.time, "plyrName": data.plyrName,
+        "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
+        "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
+        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing,
+        "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem,
+        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle,
+        "plyrMomentum": data.plyrMomentum}
+    db.createTable(table_name, data_dict)
+    db.insertData(table_name, data_dict)
 
 """ if u run this file standalone it will simply test some stuff"""
 if __name__ == "__main__":
