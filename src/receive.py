@@ -5,7 +5,7 @@ import json
 import re
 from datetime import datetime
 import os
-import dbManage as db
+from dbManage import Database as db
 
 dataSnaps = []
 db.createDatabase()

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import csv
-import dbManage as db
+from dbManage import Database as db
+
 @dataclass 
 class Item:
     name : str
@@ -167,8 +168,8 @@ def save_to_database(data,table_name):
     db.createTable(table_name, data_dict)
     db.insertData(table_name, data_dict)
 
-""" if u run this file standalone it will simply test some stuff"""
-if __name__ == "__main__":
+
+def test1():
     """test stuff"""
     print("testing data format decrypt")
     print("\n\neg. plyrInv...:")
@@ -182,3 +183,11 @@ if __name__ == "__main__":
     for idx, i in enumerate(nameCount.items()):
         pI += f"Main Inventory {idx}: {i[0]}, Count: {i[1]}; "
     print(pI, "\n => \n", decryptInv(pI))
+
+def test2():
+    #data = load_from_csv("../saves/playerData_01-09-2025-18-23-48.csv")
+    #print("data", data)
+    save_to_database(data, "DATA")
+""" if u run this file standalone it will simply test some stuff"""
+if __name__ == "__main__":
+    test2()
