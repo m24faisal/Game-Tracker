@@ -115,7 +115,7 @@ def createTable(table_name, data):
         conn.close()
         print("Database connection closed.")
 
-def serialized_data(value):
+def serialize_value(value):
     """
     Serialize Python objects, lists, and dictionaries for insertion into PostgreSQL.
     """
@@ -132,7 +132,7 @@ def insertData(table_name, data):
         cursor = connection.cursor()
 
         # Serialize complex values in the dictionary
-        serialized_data = {key: serialized_data(value) for key, value in data.items()}
+        serialized_data = {key: serialize_value(value) for key, value in data.items()}
 
         # Build the SQL query dynamically
         columns = serialized_data.keys()
