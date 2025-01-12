@@ -148,12 +148,15 @@ class Database:
             values = serialized_data.values()
 
             query = f"""
-                INSERT INTO {table_name} ({', '.join(columns)})
+                INSERT INTO \"{table_name}\" ({', '.join(columns)})
                 VALUES ({', '.join(['%s'] * len(values))})
             """
 
+            print(query)
+            print(tuple(values))
+            newVals = tuple(val[:255] for val in tuple(values))
             # Execute the query with values
-            cursor.execute(query, tuple(values))
+            cursor.execute(query, newVals)
             connection.commit()
             print("Data inserted successfully!")
 
@@ -165,4 +168,29 @@ class Database:
                 cursor.close()
                 connection.close()
 
+    @classmethod
+    def custom_command(cls, query):
+        try:
+            # Connect to the PostgreSQL database
+            connection = psycopg2.connect(**cls.DB_SERVER_CONFIG)
+            cursor = connection.cursor()
 
+
+            # Execute the query with values
+            cursor.execute(query)
+            connection.commit()
+
+            # Fetch all results
+            rows = cursor.fetchall()
+            # Print the results
+            print(rows)
+            for row in rows:
+                print(row)
+
+        except Exception as e:
+            print("Error:", e)
+
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()

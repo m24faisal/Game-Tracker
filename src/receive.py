@@ -27,15 +27,16 @@ def callback(ch, method, properties, body):
     # Read data from the received message queue
     p = re.compile('(?<!\\\\)\'')
     try:
-        print(f"Received data: {body}")
+        #print(f"Received data: {body}")
         data = body.decode('ascii')
         data = p.sub('\"', data)
         data = json.loads(data)
         data = df.decrypt(data)
-        print(data)
+        #print(data)
         dataSnaps.append(data)
         df.save_to_csv(data, fName)
         df.save_to_database(data, tName)
+        
         #for data in dataSnaps:
             #df.save_to_csv(data, fName)
     except Exception as e:

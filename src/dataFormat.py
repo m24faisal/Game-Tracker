@@ -1,6 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import csv
 from dbManage import Database as db
+import os
 
 @dataclass 
 class Item:
@@ -43,6 +44,9 @@ def string_to_bool(value):
     truthy_values = {"true", "1", "yes", "on"}
     falsy_values = {"false", "0", "no", "off"}
     
+    if not isinstance(value, str):
+        value = str(value)
+
     # Normalize the input
     value = value.strip().lower()
     
@@ -55,6 +59,16 @@ def string_to_bool(value):
 def cleanSplit( source: str, token: str):
     return [s.strip() for s in source.split(token) if s.strip() != '']
 
+"""
+def pairwiseGenerator(listObj):
+    it = iter(listObj)
+    one = next(it, None)  # Get the first element
+    two = next(it, None)  # Get the first element
+    while one != None and two != None:
+        yield one, two
+        one = next(it, None)  # Get the first element
+        two = next(it, None)  # Get the first element
+"""
 
 def decryptInv(plyrInventory : str):
     out = []
@@ -67,12 +81,14 @@ def decryptInv(plyrInventory : str):
 def decryptStatus(status : str):
     out = []
     status = status.strip()
+    #print("status", status)
     if(status == 'None'):
         return out
     else:
         for stat in cleanSplit(status, ";"):
+            stat = stat.strip()
             fragmentVals = []
-            for fragment in cleanSplit(status, ','):
+            for fragment in cleanSplit(stat, ','):
                 fragmentVals.append(cleanSplit(fragment, ":")[1])
 
             out.append(
@@ -84,7 +100,7 @@ def decryptStatus(status : str):
             )
     return out
 
-def decrypt(data): # Takes dict as input, decrypts and returns the data class
+def decrypt(data) -> DataSnap: # Takes dict as input, decrypts and returns the data class
     try:
         date = data.get('date')
         fps = float(data.get("fps"))
@@ -129,21 +145,17 @@ def decrypt(data): # Takes dict as input, decrypts and returns the data class
         )
     except Exception as e:
         print(e)
-        print('decrypt failed with data: ', data)
+        
+        print('decrypt failed with data: ')
         return None
 def save_to_csv(data, filename):
-    data_dict = {"date": data.date, "fps": data.fps, "time": data.time, "plyrName": data.plyrName,
-        "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
-        "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
-        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing,
-        "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem,
-        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle,
-        "plyrMomentum": data.plyrMomentum}
+    data_dict = asdict(data)
     # Open a CSV file to write the data
     with open(filename, mode='a', newline="") as file:
         writer = csv.DictWriter(file,fieldnames=data_dict.keys())
 
-        writer.writeheader()
+        if os.path.exists(filename) and os.stat(filename).st_size == 0:
+            writer.writeheader()
 
         writer.writerow(data_dict)
 
@@ -151,22 +163,27 @@ def load_from_csv(filename):
     with open(filename, mode="r") as file:
         reader = csv.DictReader(file)
         # Convert each row in the csv file to a dictionary which is then added to a list of dictionaries
-        dataDicts = [row for row in reader]
+        #print(dataDicts)
+        outputData = []
         # The code noted below may or may not be needed
-        for data in dataDicts:
-            data = decrypt(data)
-        return dataDicts
+        for dataDict in reader:
+            #datadict to datastruct
+            outputData.append(DataSnap(**dataDict)) # named tuple from dictionary and then used as constructor for datastruct. fingers crossed
+        return outputData
 
-def save_to_database(data,table_name):
-    data_dict = {"date": data.date, "fps": data.fps, "time": data.time, "plyrName": data.plyrName,
-        "plyrInventory": data.plyrInventory, "plyrArmor": data.plyrArmor, "plyrOffhand": data.plyrOffhand,
-        "plyrStatus": data.plyrStatus, "plyrLocation": data.plyrLocation, "plyrHealth": data.plyrHealth,
-        "plyrHunger": data.plyrHunger, "plyrSat": data.plyrSat, "plyrView": data.plyrView, "plyrFacing": data.plyrFacing,
-        "plyrSelectedSlot": data.plyrSelectedSlot, "plyrSelectedItem": data.plyrSelectedItem,
-        "plyrRideState": data.plyrRideState, "plyrRideVehicle": data.plyrRideVehicle,
-        "plyrMomentum": data.plyrMomentum}
-    db.createTable(table_name, data_dict)
-    db.insertData(table_name, data_dict)
+def save_to_database(dataObjects,table_name):
+    if(isinstance(dataObjects, DataSnap)):
+        dataObjects = [dataObjects]
+    elif(isinstance(dataObjects, list)):
+        pass
+    else:
+        return # not valid
+
+    for dataObj in dataObjects:
+        #print(data)
+        data_dict = asdict(dataObj)
+        db.createTable(table_name, data_dict)
+        db.insertData(table_name, data_dict)
 
 
 def test1():
@@ -185,9 +202,13 @@ def test1():
     print(pI, "\n => \n", decryptInv(pI))
 
 def test2():
-    #data = load_from_csv("../saves/playerData_01-09-2025-18-23-48.csv")
-    #print("data", data)
+    data = load_from_csv("../saves/playerData_01_11_2025_22_23_01.csv")
+    print("data", data[0])
     save_to_database(data, "DATA")
+def test3():
+    q = "SELECT tablename, schemaname FROM pg_catalog.pg_tables WHERE tablename = 'data';"
+    db.custom_command(q)
 """ if u run this file standalone it will simply test some stuff"""
 if __name__ == "__main__":
     test2()
+    test3()
