@@ -4,47 +4,60 @@ from psycopg2 import sql
 import json
 
 class Database:
+
+    DB_NAME = "playerData"
     #PosrgeSQL Server Connection Settings
-    DB_SERVER_CONFIG = {
+    APP_DB_CONFIG = {
         "host": "localhost",
-        "database": "postgres",
+        "database":  DB_NAME,
         "user": "postgres",
         "password": "Faiz256",
         "port": "5432"
     }
-    DB_NAME = "playerData"
+
+    MASTER_DB_CONFIG = {
+        "host": "localhost",
+        "database":  "postgres",
+        "user": "postgres",
+        "password": "Faiz256",
+        "port": "5432"
+    }
+    
     # Create Database
 
     @classmethod
     def createDatabase(cls):
-            try:
-                # Connect to the PostgreSQL server (not a specific database yet)
-                connection = psycopg2.connect(**cls.DB_SERVER_CONFIG)
-                connection.autocommit = True  # Enable autocommit to execute CREATE DATABASE
-
-                # Create a cursor
-                cursor = connection.cursor()
-
-                # Check if the database already exists
-                cursor.execute(
-                    "SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s;", (cls.DB_NAME,)
-                )
-                exists = cursor.fetchone()
-                if exists:
-                    print(f"Database '{cls.DB_NAME}' already exists.")
-                else:
-                    # Create the new database
-                    cursor.execute(sql.SQL("CREATE DATABASE {};").format(sql.Identifier(cls.DB_NAME)))
-                    print(f"Database '{cls.DB_NAME}' created successfully.")
-
-            except Exception as e:
-                print("Error while creating the database:", e)
             
-            finally:
-                if connection:
-                    cursor.close()
-                    connection.close()
-                    print("Server connection closed.")
+        
+        try:
+            # Connect to the PostgreSQL server (not a specific database yet)
+            connection = psycopg2.connect(**cls.MASTER_DB_CONFIG)
+            connection.autocommit = True  # Enable autocommit to execute CREATE DATABASE
+
+            # Create a cursor
+            cursor = connection.cursor()
+            # Check if the database already exists
+            cursor.execute(
+                "SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s;", (cls.DB_NAME,)
+            )
+            exists = cursor.fetchone()
+
+            
+            if exists:
+                print(f"Database '{cls.DB_NAME}' already exists.")
+            else:
+                # Create the new database
+                cursor.execute(sql.SQL("CREATE DATABASE {};").format(sql.Identifier(cls.DB_NAME)))
+                print(f"Database '{cls.DB_NAME}' created successfully.")
+
+            cursor.execute( f"GRANT ALL PRIVILEGES ON DATABASE \"{cls.DB_NAME}\" TO { (cls.APP_DB_CONFIG.get('user')) };" )
+
+        except Exception as e:
+            print("Error while creating the database:", e)
+        if connection:
+            cursor.close()
+            connection.close()
+            print("Server connection closed.")
             
 
     @staticmethod
@@ -79,7 +92,7 @@ class Database:
         """
         # Create a connection to the PostgreSQL database
         try:
-            conn = psycopg2.connect(**cls.DB_SERVER_CONFIG)
+            conn = psycopg2.connect(**cls.APP_DB_CONFIG)
             print("Connected to the database successfully.")
         except Exception as e:
             print(f"Error connecting to the database: {e}")
@@ -94,7 +107,7 @@ class Database:
                         FROM information_schema.tables 
                         WHERE table_name = %s
                     );
-                """, (table_name,))
+                """, (table_name, ))
                 
                 # If the table exists, do nothing
                 if cursor.fetchone()[0]:
@@ -110,7 +123,6 @@ class Database:
                     sql.Identifier(table_name),
                     sql.SQL(columns)
                 )
-                
                 cursor.execute(create_table_query)
                 conn.commit()
                 print(f"Table '{table_name}' created successfully.")
@@ -137,7 +149,7 @@ class Database:
             cls.createTable(table_name, data)
 
             # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**cls.DB_SERVER_CONFIG)
+            connection = psycopg2.connect(**cls.APP_DB_CONFIG)
             cursor = connection.cursor()
 
             # Serialize complex values in the dictionary
@@ -172,7 +184,7 @@ class Database:
     def custom_command(cls, query):
         try:
             # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**cls.DB_SERVER_CONFIG)
+            connection = psycopg2.connect(**cls.APP_DB_CONFIG)
             cursor = connection.cursor()
 
 

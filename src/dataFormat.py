@@ -210,5 +210,7 @@ def test3():
     db.custom_command(q)
 """ if u run this file standalone it will simply test some stuff"""
 if __name__ == "__main__":
+    #db.createDatabase()
     test2()
-    test3()
+    #test3()
+    pass
