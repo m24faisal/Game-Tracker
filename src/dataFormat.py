@@ -171,7 +171,8 @@ def load_from_csv(filename):
             outputData.append(DataSnap(**dataDict)) # named tuple from dictionary and then used as constructor for datastruct. fingers crossed
         return outputData
 
-def save_to_database(dataObjects,table_name):
+#TODO accept dicts instead
+def save_to_table(dataObjects,table_name):
     if(isinstance(dataObjects, DataSnap)):
         dataObjects = [dataObjects]
     elif(isinstance(dataObjects, list)):
@@ -184,6 +185,12 @@ def save_to_database(dataObjects,table_name):
         data_dict = asdict(dataObj)
         db.createTable(table_name, data_dict)
         db.insertData(table_name, data_dict)
+
+# TODO split dataframe into main table
+def save_dataframe_to_database(dataframe):
+    data_table_entry = ""
+    effects_table_entry = ""
+    item_table_entry = "" # maybe we need to specify item inventory location as well!
 
 
 def test1():
@@ -204,7 +211,7 @@ def test1():
 def test2():
     data = load_from_csv("../saves/playerData_01_11_2025_22_23_01.csv")
     print("data", data[0])
-    save_to_database(data, "DATA")
+    save_to_table(data, "DATA")
 def test3():
     q = "SELECT tablename, schemaname FROM pg_catalog.pg_tables WHERE tablename = 'data';"
     db.custom_command(q)
