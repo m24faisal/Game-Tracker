@@ -3,6 +3,13 @@ import psycopg2
 from psycopg2 import sql
 import json
 
+
+# TODO SPEED OPTIMIZATION
+"""
+    TODO KEEP CONNECTION LIVE
+    TODO BATCH DATABASE WRITES TO SAVE ON LATENCY
+
+"""
 class Database:
 
     DB_NAME = "playerData"
@@ -164,9 +171,10 @@ class Database:
                 VALUES ({', '.join(['%s'] * len(values))})
             """
 
-            print(query)
-            print(tuple(values))
-            newVals = tuple(val[:255] for val in tuple(values))
+            #print(query)
+            #print(tuple(values))
+            #newVals = tuple( val[:255]   for val in tuple(values))
+            newVals = tuple(values)
             # Execute the query with values
             cursor.execute(query, newVals)
             connection.commit()

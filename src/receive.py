@@ -35,7 +35,7 @@ def callback(ch, method, properties, body):
         #print(data)
         dataSnaps.append(data)
         df.save_to_csv(data, fName)
-        df.save_to_database(data, tName)
+        df.save_to_database(data, "DATA")
         
         #for data in dataSnaps:
             #df.save_to_csv(data, fName)
