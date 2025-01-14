@@ -174,23 +174,24 @@ def load_from_csv(filename):
 #TODO accept dicts instead
 def save_to_table(dataObjects,table_name):
     if(isinstance(dataObjects, DataSnap)):
-        dataObjects = [dataObjects]
-    elif(isinstance(dataObjects, list)):
+        dataObjects = asdict(dataObjects)
+        dataObjectsList = [dataObjects]
+    elif(isinstance(dataObjectsList, list)):
         pass
     else:
         return # not valid
 
     for dataObj in dataObjects:
         #print(data)
-        data_dict = asdict(dataObj)
-        db.createTable(table_name, data_dict)
-        db.insertData(table_name, data_dict)
+        #data_dict = asdict(dataObj)
+        db.createTable(table_name,dataObj) #data_dict#)
+        db.insertData(table_name,dataObj) #data_dict)
 
 # TODO split dataframe into main table
 def save_dataframe_to_database(dataframe):
     data_table_entry = ""
-    effects_table_entry = ""
-    item_table_entry = "" # maybe we need to specify item inventory location as well!
+    effects_table_entry = dataframe.plyrStatus
+    item_table_entry = dataframe.plyrInventory # maybe we need to specify item inventory location as well!
 
 
 def test1():
