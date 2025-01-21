@@ -168,7 +168,7 @@ class Database:
         else:
             datadict.pop("plyrInventory")
         #do same for armor and offhand, can either continue incrementing idx, or we can create a "source" column for which type of inv this is from
-        datadict.pop("plyrArmor")
+        datadict.pop("plyrArmor") # just discard for now
         datadict.pop("plyrOffhand")
         
         for effect in datadict["plyrStatus"]:
