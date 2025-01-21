@@ -175,7 +175,7 @@ class Database:
             effectDict: dict = asdict(effect)
             effectList.append(effectDict)
         else:
-            datadict.pop("plyrInventory")
+            datadict.pop("plyrStatus")
         return (datadict, itemList, effectList)
     
     #assumes dataframe
