@@ -230,8 +230,7 @@ class Database:
             connection.commit()
 
             # get data table id with sql query
-            #TODO
-            # placeholder
+            # TODO, placeholder, should be something like: get data id or something
             dataID = str(1)
 
             for item in data[1]:

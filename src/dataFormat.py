@@ -174,7 +174,6 @@ def load_from_csv(filename):
 
 """
 ## Deprecated
-#TODO accept dicts instead
 def save_to_table(dataObjects,table_name):
     if(isinstance(dataObjects, DataSnap)):
         dataObjects = asdict(dataObjects)
