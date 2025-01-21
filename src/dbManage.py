@@ -1,8 +1,10 @@
 # PostgreSQL Database Integration with Python 3
-from dataclasses import asdict
+from dataclasses import asdict, fields
 import psycopg2
 from psycopg2 import sql
 import json
+
+from dataFormat import Effect, Item
 
 
 # TODO SPEED OPTIMIZATION -- DO THIS ONCE DB ISSUES ARE FULLY RESOLVED
@@ -156,14 +158,16 @@ class Database:
     @classmethod
     def convert_dataframe_to_ddataframe(cls, dataframe):
         #assume dataframe is a Dataframe Object
+        print("start")
         datadict = asdict(dataframe)
         itemList = []# list of dicts
         effectList = []
 
 
-        for idx, invItem in datadict["plyrInventory"]:
+        for idx, invItem in enumerate(dataframe.plyrInventory):
+            print(invItem)
             itemDict: dict = asdict(invItem)
-            itemDict["idx"] = idx
+            #itemDict["idx"] = idx ##TODO
             itemList.append(itemDict)
         else:
             datadict.pop("plyrInventory")
@@ -171,8 +175,9 @@ class Database:
         datadict.pop("plyrArmor") # just discard for now
         datadict.pop("plyrOffhand")
         
-        for effect in datadict["plyrStatus"]:
+        for effect in dataframe.plyrStatus:
             effectDict: dict = asdict(effect)
+            #effectDict["data_id"] = idx
             effectList.append(effectDict)
         else:
             datadict.pop("plyrStatus")
@@ -190,8 +195,10 @@ class Database:
 
             # Ensure the table exists
             cls.create_table("DATA", data[0]) #really silly to create every single time, but i digress
-            cls.create_table("ITEMS", data[1]) #really silly to create every single time, but i digress
-            cls.create_table("EFFECTS", data[2]) #really silly to create every single time, but i digress
+
+            #TODO handle none case
+            cls.create_table("ITEMS", data[1][0] + {"data_id" : 0}) #really silly to create every single time, but i digress
+            cls.create_table("EFFECTS", data[2][0] + {"data_id" : 0}) #really silly to create every single time, but i digress
 
 
             # Connect to the PostgreSQL database
@@ -202,9 +209,9 @@ class Database:
             serialized_data = {key: cls.serialize_value(value) for key, value in data[0].items()}
 
             # Build the SQL query dynamically
-            columnsData, valuesData = serialized_data.keys(), serialized_data.values()
-            columnsItems = list(data[1].keys()) + ["data_id"]
-            columnsEffects = list(data[2].keys()) + ["data_id"]
+            columnsData, valuesData = (serialized_data.keys(), serialized_data.values())
+            columnsItems = [field.name for field in fields(Item)] + ["data_id"]
+            columnsEffects = [field.name for field in fields(Effect)]+ ["data_id"]
 
             queryDATA = f"""
                 INSERT INTO \"{"DATA"}\" ({', '.join(columnsData)})
@@ -232,11 +239,13 @@ class Database:
 
             # get data table id with sql query
             inserted_data_id = str(cursor.fetchone()[0])
-
+            print("initdone", inserted_data_id)
             for item in data[1]:
-                cursor.execute(queryITEMS, tuple(item.values()) + tuple(inserted_data_id))
+                #print(queryITEMS)
+                #print(tuple(item.values()) + tuple(inserted_data_id, ))
+                cursor.execute(queryITEMS, tuple(item.values()) + (inserted_data_id, ))
             for effect in data[2]:
-                cursor.execute(queryEFFECTS, tuple(effect.values()) + tuple(inserted_data_id))
+                cursor.execute(queryEFFECTS, tuple(effect.values()) + (inserted_data_id, ))
             connection.commit()
             print("Data inserted successfully!")
 

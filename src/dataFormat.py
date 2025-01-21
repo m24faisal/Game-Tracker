@@ -1,6 +1,5 @@
 from dataclasses import dataclass, asdict
 import csv
-from dbManage import Database as db
 import os
 
 @dataclass 
@@ -219,8 +218,9 @@ def test2():
     print("data", data[0])
     #save_to_table(data, "DATA")
 def test3():
-    q = "SELECT tablename, schemaname FROM pg_catalog.pg_tables WHERE tablename = 'data';"
-    db.custom_command(q)
+    #q = "SELECT tablename, schemaname FROM pg_catalog.pg_tables WHERE tablename = 'data';"
+    #db.custom_command(q)
+    print("deprecated")
 """ if u run this file standalone it will simply test some stuff"""
 if __name__ == "__main__":
     #db.createDatabase()

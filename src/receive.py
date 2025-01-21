@@ -1,3 +1,4 @@
+import traceback
 import pika
 import pickle
 import dataFormat as df
@@ -32,15 +33,16 @@ def callback(ch, method, properties, body):
         data = p.sub('\"', data)
         data = json.loads(data)
         data = df.decrypt(data)
+        #print("decrypt done")
         #print(data)
         dataSnaps.append(data)
         df.save_to_csv(data, fName)
-
         db.save_ddataframe(db.convert_dataframe_to_ddataframe(data))
         
         #for data in dataSnaps:
             #df.save_to_csv(data, fName)
     except Exception as e:
+        traceback.print_exc()
         print("Could not decipher properly")
 
 # Set up the consumer to listen to the queue
