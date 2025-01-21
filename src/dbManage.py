@@ -209,6 +209,7 @@ class Database:
             queryDATA = f"""
                 INSERT INTO \"{"DATA"}\" ({', '.join(columnsData)})
                 VALUES ({', '.join(['%s'] * len(valuesData))})
+                RETURNING id
             """
 
             queryITEMS = f"""
@@ -230,13 +231,12 @@ class Database:
             connection.commit()
 
             # get data table id with sql query
-            # TODO, placeholder, should be something like: get data id or something
-            dataID = str(1)
+            inserted_data_id = str(cursor.fetchone()[0])
 
             for item in data[1]:
-                cursor.execute(queryITEMS, tuple(item.values()) + tuple(dataID))
+                cursor.execute(queryITEMS, tuple(item.values()) + tuple(inserted_data_id))
             for effect in data[2]:
-                cursor.execute(queryEFFECTS, tuple(effect.values()) + tuple(dataID))
+                cursor.execute(queryEFFECTS, tuple(effect.values()) + tuple(inserted_data_id))
             connection.commit()
             print("Data inserted successfully!")
 
