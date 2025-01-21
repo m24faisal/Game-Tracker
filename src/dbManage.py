@@ -197,8 +197,12 @@ class Database:
             cls.create_table("DATA", data[0]) #really silly to create every single time, but i digress
 
             #TODO handle none case
-            cls.create_table("ITEMS", data[1][0] + {"data_id" : 0}) #really silly to create every single time, but i digress
-            cls.create_table("EFFECTS", data[2][0] + {"data_id" : 0}) #really silly to create every single time, but i digress
+            itemtabledata = data[1][0].copy()
+            itemtabledata["data_id"] = 0
+            effecttabledata = data[2][0].copy()
+            effecttabledata["data_id"] = 0
+            cls.create_table("ITEMS", itemtabledata) #really silly to create every single time, but i digress
+            cls.create_table("EFFECTS", effecttabledata) #really silly to create every single time, but i digress
 
 
             # Connect to the PostgreSQL database
