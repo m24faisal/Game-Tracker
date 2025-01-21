@@ -8,6 +8,7 @@ class Item:
     name : str
     count : int
     meta : str
+    #add location to make life simple
 
 @dataclass
 class Effect:
@@ -110,11 +111,11 @@ def decrypt(data) -> DataSnap: # Takes dict as input, decrypts and returns the d
         plyrArmor = data.get('plyrArmor')
         plyrOffhand = data.get('plyrOffhand')
         plyrStatus = decryptStatus(data.get('plyrStatus'))
-        plyrLocation = eval(data.get('plyrLocation'))
+        plyrLocation = eval(data.get('plyrLocation')) #evil ##TODO replace with a more robust parsing scheme
         plyrHealth = float(data.get('plyrHealth'))
         plyrHunger = float(data.get('plyrHunger'))
         plyrSat = float(data.get('plyrSat'))
-        plyrView = eval(data.get('plyrView'))
+        plyrView = eval(data.get('plyrView')) # evil ## TODO same as above
         plyrFacing = data.get('plyrFacing'),
         plyrSelectedSlot = int(data.get('plyrSelectedSlot')),
         plyrSelectedItem = data.get('plyrSelectedItem'),
@@ -171,6 +172,8 @@ def load_from_csv(filename):
             outputData.append(DataSnap(**dataDict)) # named tuple from dictionary and then used as constructor for datastruct. fingers crossed
         return outputData
 
+"""
+## Deprecated
 #TODO accept dicts instead
 def save_to_table(dataObjects,table_name):
     if(isinstance(dataObjects, DataSnap)):
@@ -184,15 +187,18 @@ def save_to_table(dataObjects,table_name):
     for dataObj in dataObjects:
         #print(data)
         #data_dict = asdict(dataObj)
-        db.createTable(table_name,dataObj) #data_dict#)
-        db.insertData(table_name,dataObj) #data_dict)
+        db.create_table(table_name,dataObj) #data_dict#)
+        db.insert_Dataframe(table_name,dataObj) #data_dict)
+"""
 
+"""
+## Deprecated
 # TODO split dataframe into main table
 def save_dataframe_to_database(dataframe):
     data_table_entry = ""
     effects_table_entry = dataframe.plyrStatus
     item_table_entry = dataframe.plyrInventory # maybe we need to specify item inventory location as well!
-
+"""
 
 def test1():
     """test stuff"""
@@ -212,7 +218,7 @@ def test1():
 def test2():
     data = load_from_csv("../saves/playerData_01_11_2025_22_23_01.csv")
     print("data", data[0])
-    save_to_table(data, "DATA")
+    #save_to_table(data, "DATA")
 def test3():
     q = "SELECT tablename, schemaname FROM pg_catalog.pg_tables WHERE tablename = 'data';"
     db.custom_command(q)

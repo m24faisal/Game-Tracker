@@ -8,7 +8,7 @@ import os
 from dbManage import Database as db
 
 dataSnaps = []
-db.createDatabase()
+db.create_database()
 timeStamp = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
 direct = "../saves/"
 csvName = "playerData_" + timeStamp + ".csv"
@@ -35,7 +35,8 @@ def callback(ch, method, properties, body):
         #print(data)
         dataSnaps.append(data)
         df.save_to_csv(data, fName)
-        df.save_dataframe_to_database(data)
+
+        db.save_ddataframe(db.convert_dataframe_to_ddataframe(data))
         
         #for data in dataSnaps:
             #df.save_to_csv(data, fName)

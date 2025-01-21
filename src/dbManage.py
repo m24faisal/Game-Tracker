@@ -1,4 +1,5 @@
 # PostgreSQL Database Integration with Python 3
+from dataclasses import asdict
 import psycopg2
 from psycopg2 import sql
 import json
@@ -33,7 +34,7 @@ class Database:
     # Create Database
 
     @classmethod
-    def createDatabase(cls):
+    def create_database(cls):
             
         
         try:
@@ -86,11 +87,12 @@ class Database:
         else:
             return "TEXT"  # Default to TEXT for unsupported types
         
+    # change data is a dict with key:value pairs
     @classmethod
-    def createTable(cls, table_name, data):
+    def create_table(cls, table_name, data):
         """
         Ensures the table exists in the PostgreSQL database.
-        If the table does not exist, it is created based on the provided data.
+        If the table does not exist, it is created based on the provided data (dict).
         If the table already exists, the function does nothing.
         
         Args:
@@ -125,6 +127,8 @@ class Database:
                 columns = ", ".join(
                     f"{key} {cls.get_postgresql_type(value)}" for key, value in data.items()
                 )
+
+                columns = "id SERIAL PRIMARY KEY, " + columns
                 
                 create_table_query = sql.SQL("CREATE TABLE {} ({})").format(
                     sql.Identifier(table_name),
@@ -150,33 +154,90 @@ class Database:
         return value  # Return the original value for simple types
     
     @classmethod
-    def insertData(cls, table_name, data):
+    def convert_dataframe_to_ddataframe(cls, dataframe):
+        #assume dataframe is a Dataframe Object
+        datadict = asdict(dataframe)
+        itemList = []# list of dicts
+        effectList = []
+
+
+        for idx, invItem in datadict["plyrInventory"]:
+            itemDict: dict = asdict(invItem)
+            itemDict["idx"] = idx
+            itemList.append(itemDict)
+        else:
+            datadict.pop("plyrInventory")
+        #do same for armor and offhand, can either continue incrementing idx, or we can create a "source" column for which type of inv this is from
+        datadict.pop("plyrArmor")
+        datadict.pop("plyrOffhand")
+        
+        for effect in datadict["plyrStatus"]:
+            effectDict: dict = asdict(effect)
+            effectList.append(effectDict)
+        else:
+            datadict.pop("plyrInventory")
+        return (datadict, itemList, effectList)
+    
+    #assumes dataframe
+    # separate out schema creation
+    # accepts ddataframe (database dataframe) => tuple(DATA, EFFECTS, ITEMS)
+    @classmethod
+    def save_ddataframe(cls, data):
+        #table_name = ""
         try:
+            #split dataframe into three separate dicts
+
+
             # Ensure the table exists
-            cls.createTable(table_name, data)
+            cls.create_table("DATA", data[0]) #really silly to create every single time, but i digress
+            cls.create_table("ITEMS", data[1]) #really silly to create every single time, but i digress
+            cls.create_table("EFFECTS", data[2]) #really silly to create every single time, but i digress
+
 
             # Connect to the PostgreSQL database
             connection = psycopg2.connect(**cls.APP_DB_CONFIG)
             cursor = connection.cursor()
 
             # Serialize complex values in the dictionary
-            serialized_data = {key: cls.serialize_value(value) for key, value in data.items()}
+            serialized_data = {key: cls.serialize_value(value) for key, value in data[0].items()}
 
             # Build the SQL query dynamically
-            columns = serialized_data.keys()
-            values = serialized_data.values()
+            columnsData, valuesData = serialized_data.keys(), serialized_data.values()
+            columnsItems = list(data[1].keys()) + ["data_id"]
+            columnsEffects = list(data[2].keys()) + ["data_id"]
 
-            query = f"""
-                INSERT INTO \"{table_name}\" ({', '.join(columns)})
-                VALUES ({', '.join(['%s'] * len(values))})
+            queryDATA = f"""
+                INSERT INTO \"{"DATA"}\" ({', '.join(columnsData)})
+                VALUES ({', '.join(['%s'] * len(valuesData))})
+            """
+
+            queryITEMS = f"""
+                INSERT INTO \"{"ITEMS"}\" ({', '.join(columnsItems)})
+                VALUES ({', '.join(['%s'] * len(columnsItems))})
+            """
+
+            queryEFFECTS = f"""
+                INSERT INTO \"{"EFFECTS"}\" ({', '.join(columnsEffects)})
+                VALUES ({', '.join(['%s'] * len(columnsEffects))})
             """
 
             #print(query)
             #print(tuple(values))
             #newVals = tuple( val[:255]   for val in tuple(values))
-            newVals = tuple(values)
+
             # Execute the query with values
-            cursor.execute(query, newVals)
+            cursor.execute(queryDATA, tuple(valuesData))
+            connection.commit()
+
+            # get data table id with sql query
+            #TODO
+            # placeholder
+            dataID = str(1)
+
+            for item in data[1]:
+                cursor.execute(queryITEMS, tuple(item.values()) + tuple(dataID))
+            for effect in data[2]:
+                cursor.execute(queryEFFECTS, tuple(effect.values()) + tuple(dataID))
             connection.commit()
             print("Data inserted successfully!")
 
