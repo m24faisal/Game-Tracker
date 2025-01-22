@@ -37,8 +37,7 @@ class Database:
 
     @classmethod
     def create_database(cls):
-            
-        
+        connection = None
         try:
             # Connect to the PostgreSQL server (not a specific database yet)
             connection = psycopg2.connect(**cls.MASTER_DB_CONFIG)
@@ -101,6 +100,7 @@ class Database:
         - table_name: Name of the table to check/create.
         - data: Dictionary containing the column names and sample data types for the table.
         """
+        conn = None
         # Create a connection to the PostgreSQL database
         try:
             conn = psycopg2.connect(**cls.APP_DB_CONFIG)
@@ -189,6 +189,7 @@ class Database:
     @classmethod
     def save_ddataframe(cls, data):
         #table_name = ""
+        connection = None
         try:
             #split dataframe into three separate dicts
 
@@ -263,6 +264,7 @@ class Database:
 
     @classmethod
     def custom_command(cls, query):
+        connection = None
         try:
             # Connect to the PostgreSQL database
             connection = psycopg2.connect(**cls.APP_DB_CONFIG)
