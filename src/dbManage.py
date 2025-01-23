@@ -192,12 +192,12 @@ class Database:
         connection = None
         try:
             #split dataframe into three separate dicts
-
-
+            print("Happens Here 1")
             # Ensure the table exists
             cls.create_table("DATA", data[0]) #really silly to create every single time, but i digress
 
             #TODO handle none case
+            print("Happens Here 2")
             itemtabledata = data[1][0].copy()
             itemtabledata["data_id"] = 0
             effecttabledata = data[2][0].copy()
@@ -243,12 +243,14 @@ class Database:
             connection.commit()
 
             # get data table id with sql query
+            print("Happens Here 3")
             inserted_data_id = str(cursor.fetchone()[0])
             print("initdone", inserted_data_id)
             for item in data[1]:
                 #print(queryITEMS)
                 #print(tuple(item.values()) + tuple(inserted_data_id, ))
                 cursor.execute(queryITEMS, tuple(item.values()) + (inserted_data_id, ))
+            print("Happens Here 4")
             for effect in data[2]:
                 cursor.execute(queryEFFECTS, tuple(effect.values()) + (inserted_data_id, ))
             connection.commit()
