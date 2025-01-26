@@ -2,6 +2,8 @@ from dataclasses import dataclass, asdict
 import csv
 import os
 
+
+
 @dataclass 
 class Item:
     name : str
@@ -39,6 +41,9 @@ class DataSnap:
     plyrRideState: bool
     plyrRideVehicle: str
     plyrMomentum: float 
+
+DEFAULT_DATA_SNAP = DataSnap(69.0, 10.0, "Feb 15, 2025", "Playername", [1.0, 3.0, 4.0], 20.0, [Item("Example", 1, "")], "Armor", "Offhand", 
+                           [Effect("ExampleEffect", "minecraft:example", 12.0, 2)], 10.0, 10.0, [1.0,1.0,1.0],"(east,)", 1, "Birch", False, "None", 10.0)
 
 def string_to_bool(value):
     truthy_values = {"true", "1", "yes", "on"}

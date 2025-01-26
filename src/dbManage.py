@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2 import sql
 import json
 
-from dataFormat import Effect, Item
+from dataFormat import Effect, Item, DEFAULT_DATA_SNAP
 
 
 # TODO SPEED OPTIMIZATION -- DO THIS ONCE DB ISSUES ARE FULLY RESOLVED
@@ -32,6 +32,8 @@ class Database:
         "password": "Faiz256",
         "port": "5432"
     }
+
+    DEFAULT_DDATAFRAME = None # convert_dataframe_to_ddataframe(DEFAULT_DATA_SNAP)
     
     # Create Database
 
@@ -155,17 +157,18 @@ class Database:
             return json.dumps(value, default=lambda o: o.__dict__)  # Convert to JSON
         return value  # Return the original value for simple types
     
+    # creates  ddataframe (database dataframe) => tuple(DATA, [EFFECT], [ITEM]) from a Dataframe Object
     @classmethod
     def convert_dataframe_to_ddataframe(cls, dataframe):
         #assume dataframe is a Dataframe Object
-        print("start")
+        #print("start")
         datadict = asdict(dataframe)
         itemList = []# list of dicts
         effectList = []
 
 
         for idx, invItem in enumerate(dataframe.plyrInventory):
-            print(invItem)
+            #print(invItem)
             itemDict: dict = asdict(invItem)
             #itemDict["idx"] = idx ##TODO
             itemList.append(itemDict)
@@ -185,25 +188,24 @@ class Database:
     
     #assumes dataframe
     # separate out schema creation
-    # accepts ddataframe (database dataframe) => tuple(DATA, EFFECTS, ITEMS)
+    # accepts ddataframe (database dataframe) => tuple(DATA, [EFFECT], [ITEM])
     @classmethod
     def save_ddataframe(cls, data):
         #table_name = ""
         connection = None
         try:
             #split dataframe into three separate dicts
-            print("Happens Here 1")
+            #print("Happens Here 1")
             # Ensure the table exists
-            cls.create_table("DATA", data[0]) #really silly to create every single time, but i digress
-
-            #TODO handle none case
-            print("Happens Here 2")
-            itemtabledata = data[1][0].copy()
-            itemtabledata["data_id"] = 0
-            effecttabledata = data[2][0].copy()
-            effecttabledata["data_id"] = 0
-            cls.create_table("ITEMS", itemtabledata) #really silly to create every single time, but i digress
-            cls.create_table("EFFECTS", effecttabledata) #really silly to create every single time, but i digress
+            if cls.DEFAULT_DDATAFRAME is None: #only runs once
+                cls.DEFAULT_DDATAFRAME = cls.convert_dataframe_to_ddataframe(DEFAULT_DATA_SNAP)
+                cls.create_table("DATA", cls.DEFAULT_DDATAFRAME[0]) #really silly to create every single time, but i digress
+                itemtabledata = cls.DEFAULT_DDATAFRAME[1][0]
+                itemtabledata["data_id"] = 0
+                effecttabledata = cls.DEFAULT_DDATAFRAME[2][0].copy()
+                effecttabledata["data_id"] = 0
+                cls.create_table("ITEMS", itemtabledata) #really silly to create every single time, but i digress
+                cls.create_table("EFFECTS", effecttabledata) #really silly to create every single time, but i digress
 
 
             # Connect to the PostgreSQL database
