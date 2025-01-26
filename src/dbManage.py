@@ -245,18 +245,18 @@ class Database:
             connection.commit()
 
             # get data table id with sql query
-            print("Happens Here 3")
+            #print("Happens Here 3")
             inserted_data_id = str(cursor.fetchone()[0])
             print("initdone", inserted_data_id)
             for item in data[1]:
                 #print(queryITEMS)
                 #print(tuple(item.values()) + tuple(inserted_data_id, ))
                 cursor.execute(queryITEMS, tuple(item.values()) + (inserted_data_id, ))
-            print("Happens Here 4")
+            #print("Happens Here 4")
             for effect in data[2]:
                 cursor.execute(queryEFFECTS, tuple(effect.values()) + (inserted_data_id, ))
             connection.commit()
-            print("Data inserted successfully!")
+            #print("Data inserted successfully!")
 
         except Exception as e:
             print("Error:", e)
