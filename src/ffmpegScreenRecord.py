@@ -1,10 +1,11 @@
 import os
 import time
-import mss
-import numpy as np
-import imageio
 import subprocess
 import imageio_ffmpeg as ffmpeg
+
+FINAL_OUTPUT = "../saves/" + f"output_{time.time()}.mp4"
+DURATION = 60  # seconds
+FPS_TARGET = 60  # Frames per second
 
 def record_screen(output_file="output.mp4", duration=10, fps=60):
     ffmpeg_cmd = [
@@ -23,5 +24,4 @@ def record_screen(output_file="output.mp4", duration=10, fps=60):
 record_screen(FINAL_OUTPUT, duration=DURATION, fps=FPS_TARGET)
 # we are testing to see if 60fps and 60 seconds match the final output video generated. often the video has a different
 # size due to bad screen recording and dropped frames, final test , prev had a file that was corrupted and it sucked.
-# so hopefully it works now that everything is here. MP4 hopefully you fixed everything bad with the previous code format. pls work
 # target 60fps and 60 but less than 60fps 
