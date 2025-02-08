@@ -22,7 +22,7 @@ class Effect:
 @dataclass
 class DataSnap:
     fps: float
-    time: float
+    time: str
     date: str
 
     plyrName: str
@@ -42,7 +42,7 @@ class DataSnap:
     plyrRideVehicle: str
     plyrMomentum: float 
 
-DEFAULT_DATA_SNAP = DataSnap(69.0, 10.0, "Feb 15, 2025", "Playername", [1.0, 3.0, 4.0], 20.0, [Item("Example", 1, "")], "Armor", "Offhand", 
+DEFAULT_DATA_SNAP = DataSnap(69.0, "22:23:03.760143900", "2025-01-11", "Playername", [1.0, 3.0, 4.0], 20.0, [Item("Example", 1, "")], "Armor", "Offhand", 
                            [Effect("ExampleEffect", "minecraft:example", 12.0, 2)], 10.0, 10.0, [1.0,1.0,1.0],"(east,)", 1, "Birch", False, "None", 10.0)
 
 def string_to_bool(value):

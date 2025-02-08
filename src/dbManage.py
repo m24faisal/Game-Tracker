@@ -153,9 +153,13 @@ class Database:
         """
         Serialize Python objects, lists, and dictionaries for insertion into PostgreSQL.
         """
-        if isinstance(value, (list, dict)) or hasattr(value, "__dict__"):
+        if isinstance(value, (list, dict, tuple)) or hasattr(value, "__dict__"):
             return json.dumps(value, default=lambda o: o.__dict__)  # Convert to JSON
         return value  # Return the original value for simple types
+    
+    @classmethod
+    def serialize_multiple_values(cls, values):
+        return [cls.serialize_value(val) for val in values]
     
     # creates  ddataframe (database dataframe) => tuple(DATA, [EFFECT], [ITEM]) from a Dataframe Object
     @classmethod
@@ -186,6 +190,7 @@ class Database:
             datadict.pop("plyrStatus")
         return (datadict, itemList, effectList)
     
+
     #assumes dataframe
     # separate out schema creation
     # accepts ddataframe (database dataframe) => tuple(DATA, [EFFECT], [ITEM])
@@ -241,20 +246,29 @@ class Database:
             #newVals = tuple( val[:255]   for val in tuple(values))
 
             # Execute the query with values
-            cursor.execute(queryDATA, tuple(valuesData))
+            print("start")
+            print(valuesData)
+            print(cls.serialize_multiple_values(valuesData))
+            cursor.execute(queryDATA, cls.serialize_multiple_values(valuesData))
             connection.commit()
+            print("stop")
 
             # get data table id with sql query
             #print("Happens Here 3")
             inserted_data_id = str(cursor.fetchone()[0])
-            print("initdone", inserted_data_id)
+            #print("initdone", inserted_data_id)
+
             for item in data[1]:
                 #print(queryITEMS)
                 #print(tuple(item.values()) + tuple(inserted_data_id, ))
-                cursor.execute(queryITEMS, tuple(item.values()) + (inserted_data_id, ))
+                l = cls.serialize_multiple_values(item.values())
+                l.append(inserted_data_id)
+                cursor.execute(queryITEMS, l)
             #print("Happens Here 4")
             for effect in data[2]:
-                cursor.execute(queryEFFECTS, tuple(effect.values()) + (inserted_data_id, ))
+                l = cls.serialize_multiple_values(effect.values())
+                l.append(inserted_data_id)
+                cursor.execute(queryEFFECTS, l)
             connection.commit()
             #print("Data inserted successfully!")
 
