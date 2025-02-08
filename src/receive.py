@@ -34,7 +34,6 @@ def callback(ch, method, properties, body):
         data = json.loads(data)
         data = df.decrypt(data)
         #print("decrypt done")
-        #print(data)
         dataSnaps.append(data)
         df.save_to_csv(data, fName)
         db.save_ddataframe(db.convert_dataframe_to_ddataframe(data))

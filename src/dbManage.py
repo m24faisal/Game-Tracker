@@ -75,12 +75,12 @@ class Database:
     def get_postgresql_type(value):
         if isinstance(value, str):
             return "VARCHAR(255)"
+        elif isinstance(value, bool):
+            return "BOOLEAN"
         elif isinstance(value, int):
             return "INTEGER"
         elif isinstance(value, float):
             return "REAL"
-        elif isinstance(value, bool):
-            return "BOOLEAN"
         elif isinstance(value, list):
             return "JSONB"  # Use JSONB for storing lists
         elif isinstance(value, dict):
@@ -134,10 +134,16 @@ class Database:
 
                 columns = "id SERIAL PRIMARY KEY, " + columns
                 
+                
+
                 create_table_query = sql.SQL("CREATE TABLE {} ({})").format(
                     sql.Identifier(table_name),
                     sql.SQL(columns)
                 )
+
+                #print(columns)
+                #print(create_table_query)
+
                 cursor.execute(create_table_query)
                 conn.commit()
                 print(f"Table '{table_name}' created successfully.")
@@ -204,13 +210,21 @@ class Database:
             # Ensure the table exists
             if cls.DEFAULT_DDATAFRAME is None: #only runs once
                 cls.DEFAULT_DDATAFRAME = cls.convert_dataframe_to_ddataframe(DEFAULT_DATA_SNAP)
-                cls.create_table("DATA", cls.DEFAULT_DDATAFRAME[0]) #really silly to create every single time, but i digress
+                
                 itemtabledata = cls.DEFAULT_DDATAFRAME[1][0]
                 itemtabledata["data_id"] = 0
                 effecttabledata = cls.DEFAULT_DDATAFRAME[2][0].copy()
                 effecttabledata["data_id"] = 0
-                cls.create_table("ITEMS", itemtabledata) #really silly to create every single time, but i digress
-                cls.create_table("EFFECTS", effecttabledata) #really silly to create every single time, but i digress
+
+                serialized_data = {key: cls.serialize_value(value) for key, value in cls.DEFAULT_DDATAFRAME[0].items()}
+                serialized_itemtable = {key: cls.serialize_value(value) for key, value in itemtabledata.items()}
+                serialized_effect = {key: cls.serialize_value(value) for key, value in effecttabledata.items()}
+
+                #print(serialized_data)
+
+                cls.create_table("DATA", serialized_data) #really silly to create every single time, but i digress
+                cls.create_table("ITEMS", serialized_itemtable) #really silly to create every single time, but i digress
+                cls.create_table("EFFECTS", serialized_effect) #really silly to create every single time, but i digress
 
 
             # Connect to the PostgreSQL database
@@ -246,12 +260,16 @@ class Database:
             #newVals = tuple( val[:255]   for val in tuple(values))
 
             # Execute the query with values
-            print("start")
-            print(valuesData)
-            print(cls.serialize_multiple_values(valuesData))
-            cursor.execute(queryDATA, cls.serialize_multiple_values(valuesData))
+            #serializedDATA = cls.serialize_multiple_values(valuesData)
+            valuesData = list(valuesData)
+
+            #print("Inserting DATA:")
+            #print(valuesData)
+            #print(queryDATA)
+
+            cursor.execute(queryDATA, valuesData)
             connection.commit()
-            print("stop")
+            #print("stop")
 
             # get data table id with sql query
             #print("Happens Here 3")
@@ -263,17 +281,32 @@ class Database:
                 #print(tuple(item.values()) + tuple(inserted_data_id, ))
                 l = cls.serialize_multiple_values(item.values())
                 l.append(inserted_data_id)
+                
+                #print("Inserting Item:")
+                #print(queryITEMS)
+                #print(l)
+
                 cursor.execute(queryITEMS, l)
+                
+                #print("insertion complete")
             #print("Happens Here 4")
             for effect in data[2]:
                 l = cls.serialize_multiple_values(effect.values())
                 l.append(inserted_data_id)
+                
+                #print("Inserting Effects:")
+                #print(queryEFFECTS)
+                #print(l)
+
                 cursor.execute(queryEFFECTS, l)
+                #print("insertion complete")
             connection.commit()
             #print("Data inserted successfully!")
 
         except Exception as e:
-            print("Error:", e)
+        
+            print("Error Message DDATAFRAME SAVE:", e)
+            
 
         finally:
             if connection:
@@ -296,12 +329,13 @@ class Database:
             # Fetch all results
             rows = cursor.fetchall()
             # Print the results
-            print(rows)
+            #print(rows)
             for row in rows:
-                print(row)
+                #print(row)
+                pass
 
         except Exception as e:
-            print("Error:", e)
+            print("Error at Custom Command:", e)
 
         finally:
             if connection:

@@ -120,11 +120,11 @@ def decrypt(data) -> DataSnap: # Takes dict as input, decrypts and returns the d
         plyrHunger = float(data.get('plyrHunger'))
         plyrSat = float(data.get('plyrSat'))
         plyrView = eval(data.get('plyrView')) # evil ## TODO same as above
-        plyrFacing = data.get('plyrFacing'),
-        plyrSelectedSlot = int(data.get('plyrSelectedSlot')),
-        plyrSelectedItem = data.get('plyrSelectedItem'),
-        plyrRideState = string_to_bool(data.get('plyrRideState')),
-        plyrRideVehicle = data.get('plyrRideVehicle'),
+        plyrFacing = data.get('plyrFacing')
+        plyrSelectedSlot = int(data.get('plyrSelectedSlot')) # should be int, but for some reason ints are turned into tuples of size one
+        plyrSelectedItem = data.get('plyrSelectedItem')
+        plyrRideState = string_to_bool(data.get('plyrRideState'))
+        plyrRideVehicle = data.get('plyrRideVehicle')
         plyrMomentum = float(data.get('plyrMomentum'))
 
         return DataSnap(
