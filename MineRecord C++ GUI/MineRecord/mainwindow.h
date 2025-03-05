@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "qlistwidget.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -22,5 +23,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QListWidget *processListWidget;
 };
 #endif // MAINWINDOW_H

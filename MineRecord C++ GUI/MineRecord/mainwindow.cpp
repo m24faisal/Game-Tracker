@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDialog>
-#include <QPlainTextEdit>
+#include <QListWidget>
 #include <QVBoxLayout>
+#include <QDialogButtonBox>
+#include <QPushButton>
 #include <QProcess>
 #include <QDebug>
 
@@ -11,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // Add a QListWidget to the main window to display added processes
+    processListWidget = new QListWidget(this);
+    setCentralWidget(processListWidget); // Set the QListWidget as the central widget
 }
 
 MainWindow::~MainWindow()
@@ -25,13 +30,19 @@ void MainWindow::on_actionAdd_Game_triggered()
     processDialog->setWindowTitle("Active Processes");
     processDialog->setFixedSize(400, 300);
 
-    // Create a QPlainTextEdit to display the process names
-    QPlainTextEdit *processTextEdit = new QPlainTextEdit(processDialog);
-    processTextEdit->setReadOnly(true); // Make it read-only
+    // Create a QListWidget to display the process names
+    QListWidget *dialogProcessListWidget = new QListWidget(processDialog);
+    dialogProcessListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    // Create a QDialogButtonBox to hold the "Add Process" button
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, processDialog);
+    QPushButton *addProcessButton = new QPushButton("Add Process", processDialog);
+    buttonBox->addButton(addProcessButton, QDialogButtonBox::ActionRole);
 
     // Create a layout for the dialog
     QVBoxLayout *layout = new QVBoxLayout(processDialog);
-    layout->addWidget(processTextEdit);
+    layout->addWidget(dialogProcessListWidget);
+    layout->addWidget(buttonBox);
     processDialog->setLayout(layout);
 
     // Retrieve the list of active processes using 'tasklist'
@@ -59,7 +70,7 @@ void MainWindow::on_actionAdd_Game_triggered()
     }
 
     // Display the process names in the QPlainTextEdit
-    processTextEdit->setPlainText(processNames.join("\n"));
+    dialogProcessListWidget->addItems(processNames);
 
     // Show the dialog
     processDialog->exec();
