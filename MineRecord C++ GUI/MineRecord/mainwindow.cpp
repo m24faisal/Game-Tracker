@@ -71,6 +71,16 @@ void MainWindow::on_actionAdd_Game_triggered()
 
     // Display the process names in the QPlainTextEdit
     dialogProcessListWidget->addItems(processNames);
+    // Connect the Add Process button to a lambda that adds the selected process to the main window
+    connect(addProcessButton, &QPushButton::clicked, this, [=]() {
+        QListWidgetItem *selectedItem = dialogProcessListWidget->currentItem();
+        if (selectedItem) {
+            QString selectedProcessName = selectedItem->text();
+            processListWidget->addItem(selectedProcessName);
+        }
+        processDialog->accept(); // Close the dialog
+    });
+
 
     // Show the dialog
     processDialog->exec();
