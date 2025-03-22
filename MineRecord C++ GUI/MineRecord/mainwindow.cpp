@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QProcess>
 #include <QDebug>
-
+#include <QStatusBar>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Add a QListWidget to the main window to display added processes
     processListWidget = new QListWidget(this);
     setCentralWidget(processListWidget); // Set the QListWidget as the central widget
+    connect(ui->actionRecent_Processes_Added, &QAction::hovered, this, &MainWindow::on_actionRecent_Processes_Added_hovered);
 }
 
 MainWindow::~MainWindow()
@@ -85,3 +86,22 @@ void MainWindow::on_actionAdd_Game_triggered()
     // Show the dialog
     processDialog->exec();
 }
+void MainWindow::on_actionRecent_Processes_Added_hovered()
+{
+    // Retrieve the list of items from the processListWidget
+    QStringList addedProcesses;
+    for (int i = 0; i < processListWidget->count(); ++i) {
+        addedProcesses.append(processListWidget->item(i)->text());
+    }
+
+    // Join the list of processes into a single string to display in the status bar or tooltip
+    QString processesText = addedProcesses.join(", ");
+
+    // Option 1: Show the list in the status bar (you can use either a tooltip or status bar)
+    statusBar()->showMessage("Recent Processes: " + processesText);
+
+    // Option 2: Alternatively, use a tooltip to show the processes
+    // ui->actionRecent_Processes_Added->setToolTip("Recent Processes: " + processesText);
+}
+
+

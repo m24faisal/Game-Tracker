@@ -21,6 +21,8 @@ public:
 private slots:
     void on_actionAdd_Game_triggered();
 
+    void on_actionRecent_Processes_Added_hovered();
+
 private:
     Ui::MainWindow *ui;
     QListWidget *processListWidget;

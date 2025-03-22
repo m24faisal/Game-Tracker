@@ -58,9 +58,15 @@ QMenu::item:selected { /* When hovered or focused */
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="actionRecent_Processes_Added_2">
+     <property name="title">
+      <string>Recent Processes Added</string>
+     </property>
+    </widget>
     <addaction name="actionAdd_Game"/>
     <addaction name="actionStart_Recording"/>
     <addaction name="actionExit_Application"/>
+    <addaction name="actionRecent_Processes_Added_2"/>
    </widget>
    <widget class="QMenu" name="Setting">
     <property name="title">
